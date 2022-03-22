@@ -33,7 +33,7 @@ weeks_cn = an2cn(weeks)
 
 
 def xlsx2json(filename, ranktype):
-    wb = load_workbook(filename)
+    wb = load_workbook(filename, data_only=True)
     ws = wb.active
     xlsx_data = []
     last_col = len(list(ws.columns))
@@ -77,7 +77,7 @@ def xlsx2json(filename, ranktype):
                 if 10 >= x["排名"] > 3
                 else f"./主榜20-11/Rank_{x['排名']-10}.png",
                 "delta": "+"
-                + format(int(point_data[x["排名"]] - point_data[x["排名"] + 1]), ","),
+                + format(int(point_data[x["排名"]]) - int(point_data[x["排名"] + 1]), ","),
                 "offset": 0,
             }
             for x in xlsx_data
