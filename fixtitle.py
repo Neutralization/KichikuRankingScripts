@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import asyncio
-import encodings.idna
 import json
 from functools import reduce
 from os import listdir
@@ -16,6 +15,9 @@ weekday = int(NOW.format("d"))
 start_date = NOW.shift(days=-(weekday + 6)).format("YYYY-MM-DD")
 end_date = NOW.shift(days=-(weekday - 1)).format("YYYY-MM-DD")
 weeks = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
+
+# https://bugs.python.org/issue29288
+"".encode("idna")
 
 
 def readExcel(filename):
