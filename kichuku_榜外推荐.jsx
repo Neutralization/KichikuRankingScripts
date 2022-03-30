@@ -107,6 +107,30 @@ function AddAudioProperty(Target, Ptype, Duration, Offset, Direction) {
     return NewProperty;
 }
 
+function AddProgressBar(Target, Length, Position, Duration, Offset, Delay) {
+    NewLayer = Target.layers.addShape()
+    NewLayer.startTime = Offset;
+    NewLayer.outPoint = Duration + Offset;
+    NewLayer.name = "Progress"
+    VectorGroup = NewLayer.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group").addProperty("ADBE Vectors Group")
+    VectorGroup.addProperty("ADBE Vector Shape - Rect")
+    VectorGroup.addProperty("ADBE Vector Graphic - Fill")
+    VectorGroup.addProperty("ADBE Vector Graphic - Stroke")
+    VectorGroup.property("ADBE Vector Shape - Rect")
+        .property("ADBE Vector Rect Size")
+        .setValueAtTime(Offset + Delay, [0, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect")
+        .property("ADBE Vector Rect Size")
+        .setValueAtTime(Offset + 0.5 + Delay, [Length, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect")
+        .property("ADBE Vector Rect Size")
+        .setValueAtTime(Offset + Duration, [0, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Roundness").setValue(3)
+    VectorGroup.property("ADBE Vector Graphic - Fill").property("ADBE Vector Fill Color").setValue([1, 1, 1, 1])
+    VectorGroup.property("ADBE Vector Graphic - Stroke").property("ADBE Vector Stroke Width").setValue(0)
+    NewLayer.property("Position").setValue(Position)
+}
+
 function BezierCurve(point1, point2, point3, point4, input_x) {
     function SolveCubic(func_a, func_b, func_c, func_d) {
         function SolveQuadratic(sfunc_a, sfunc_b, sfunc_c) {
@@ -232,6 +256,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     RankVideoLayer.property("Position").setValue([1148, 540]);
     // AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
     // AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
+    AddProgressBar(Part1, VideoSize[0], [1148, 930], SingleLength - 1, Globaloffset, 0.75)
     t_fps = 2 * CompFPS;
     dest_y1 = -35;
     dest_y2 = 0;
@@ -306,6 +331,7 @@ if (VideoItemSize.width / VideoItemSize.height >= VideoSize[0] / VideoSize[1]) {
 RankVideoLayer.property("Position").setValue([1148, 540]);
 //AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
 //AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
+AddProgressBar(Part2, VideoSize[0], [1148, 930], SingleLength - 1, Globaloffset, 0.75)
 t_fps = 2 * CompFPS;
 dest_y1 = -35;
 dest_y2 = 0;

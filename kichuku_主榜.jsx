@@ -110,6 +110,30 @@ function AddAudioProperty(Target, Ptype, Duration, Offset, Direction) {
     return NewProperty;
 }
 
+function AddProgressBar(Target, Length, Position, Duration, Offset, Delay) {
+    NewLayer = Target.layers.addShape()
+    NewLayer.startTime = Offset;
+    NewLayer.outPoint = Duration + Offset;
+    NewLayer.name = "Progress"
+    VectorGroup = NewLayer.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group").addProperty("ADBE Vectors Group")
+    VectorGroup.addProperty("ADBE Vector Shape - Rect")
+    VectorGroup.addProperty("ADBE Vector Graphic - Fill")
+    VectorGroup.addProperty("ADBE Vector Graphic - Stroke")
+    VectorGroup.property("ADBE Vector Shape - Rect")
+        .property("ADBE Vector Rect Size")
+        .setValueAtTime(Offset + Delay, [0, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect")
+        .property("ADBE Vector Rect Size")
+        .setValueAtTime(Offset + 0.5 + Delay, [Length, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect")
+        .property("ADBE Vector Rect Size")
+        .setValueAtTime(Offset + Duration, [0, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Roundness").setValue(3)
+    VectorGroup.property("ADBE Vector Graphic - Fill").property("ADBE Vector Fill Color").setValue([1, 1, 1, 1])
+    VectorGroup.property("ADBE Vector Graphic - Stroke").property("ADBE Vector Stroke Width").setValue(0)
+    NewLayer.property("Position").setValue(Position)
+}
+
 function BezierCurve(point1, point2, point3, point4, input_x) {
     function SolveCubic(func_a, func_b, func_c, func_d) {
         function SolveQuadratic(sfunc_a, sfunc_b, sfunc_c) {
@@ -228,6 +252,7 @@ for (rank = 20; rank > 10; rank -= 1) {
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + 1, [0, 0]);
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength - 1, [0, 0]);
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength, [-Infinity, -Infinity]);
+    AddProgressBar(Part1, VideoSize[0], [1200, 796], SingleLength, Globaloffset, 0.7)
 
     RankVideoMask = AddLayer(Part1, "mask_20", SingleLength, Globaloffset);
     GreenMask = RankVideoMask.property("Effects").addProperty("Keylight 906");
@@ -285,6 +310,7 @@ for (rank = 10; rank > 3; rank -= 1) {
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + 1, [0, 0]);
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength - 1, [0, 0]);
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength, [-Infinity, -Infinity]);
+    AddProgressBar(Part2, VideoSize[0], [1200, 796], SingleLength, Globaloffset, 0.7)
 
     RankVideoMask = AddLayer(Part2, "mask_10", SingleLength, Globaloffset);
     GreenMask = RankVideoMask.property("Effects").addProperty("Keylight 906");
@@ -464,6 +490,36 @@ for (rank = 3; rank > 0; rank -= 1) {
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + 1, [0, 0]);
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength - 1, [0, 0]);
     //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength, [-Infinity, -Infinity]);
+    ProgressLayer = Part3.layers.addShape()
+    ProgressLayer.startTime = Globaloffset;
+    ProgressLayer.outPoint = SingleLength + Globaloffset;
+    ProgressLayer.name = "Progress"
+    VectorGroup = ProgressLayer.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group").addProperty("ADBE Vectors Group")
+    VectorGroup.addProperty("ADBE Vector Shape - Rect")
+    VectorGroup.addProperty("ADBE Vector Graphic - Fill")
+    VectorGroup.addProperty("ADBE Vector Graphic - Stroke")
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Roundness").setValue(3)
+    VectorGroup.property("ADBE Vector Graphic - Fill").property("ADBE Vector Fill Color").setValue([1, 1, 1, 1])
+    VectorGroup.property("ADBE Vector Graphic - Stroke").property("ADBE Vector Stroke Width").setValue(0)
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Size")
+        .setValueAtTime(Globaloffset + 0.7, [0, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Size")
+        .setValueAtTime(Globaloffset + 1.2, [VideoSize[0], 8])
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Size")
+        .setValueAtTime(Globaloffset + 8, [VideoSize[0] * (1 - 8 / SingleLength), 8])
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Size")
+        .setValueAtTime(Globaloffset + 9, [CompSize[0] * (1 - 9 / SingleLength), 8])
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Size")
+        .setValueAtTime(Globaloffset + SingleLength - 5, [CompSize[0] * 5 / SingleLength, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Size")
+        .setValueAtTime(Globaloffset + SingleLength - 4, [VideoSize[0] * 4 / SingleLength, 8])
+    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Size")
+        .setValueAtTime(Globaloffset + SingleLength, [0, 8])
+
+    ProgressLayer.property("Position").setValueAtTime(Globaloffset + 8, [1200, 796])
+    ProgressLayer.property("Position").setValueAtTime(Globaloffset + 9, [960, 1076]);
+    ProgressLayer.property("Position").setValueAtTime(Globaloffset + SingleLength - 5, [960, 1076]);
+    ProgressLayer.property("Position").setValueAtTime(Globaloffset + SingleLength - 4, [1200, 796]);
 
     RankVideoMask = AddLayer(Part3, "mask_3", SingleLength, Globaloffset);
     GreenMask = RankVideoMask.property("Effects").addProperty("Keylight 906");

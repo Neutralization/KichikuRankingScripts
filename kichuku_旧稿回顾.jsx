@@ -104,6 +104,8 @@ function AddAudioProperty(Target, Ptype, Duration, Offset, Direction) {
     return NewProperty;
 }
 
+
+
 function BezierCurve(point1, point2, point3, point4, input_x) {
     function SolveCubic(func_a, func_b, func_c, func_d) {
         function SolveQuadratic(sfunc_a, sfunc_b, sfunc_c) {
@@ -230,6 +232,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     RankVideoLayer.property("Position").setValue([960, 540]);
     //AddAudioProperty(RankVideoLayer, 2, 3, Globaloffset, 1);
     //AddAudioProperty(RankVideoLayer, 2, 3, Globaloffset + SingleLength - 3, 2);
+    AddProgressBar(Part1, VideoSize[0], [960, 978], SingleLength, Globaloffset, 0.7)
     t_fps = 2 * CompFPS;
     dest_y1 = -35;
     dest_y2 = 0;
