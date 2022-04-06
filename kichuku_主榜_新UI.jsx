@@ -28,12 +28,23 @@ AllData = JSON.parse(content);
 
 OffsetData = {};
 PointData = {};
-for (key in AllData) {
+for (key = 0; key < AllData.length; key++) {
     rank = AllData[key]["rank"];
     StaticResource[rank + "_V"] = AllData[key]["video"];
     StaticResource[rank + "_T"] = AllData[key]["text"];
     OffsetData[rank] = AllData[key]["offset"];
     PointData[rank] = AllData[key]["delta"];
+}
+
+TrueDuration = [0, 0, 0];
+for (key = 0; key < AllData.length; key++) {
+    if (AllData[key]["rank"] <= 3) {
+        TrueDuration[0] += 1
+    } else if (3 < AllData[key]["rank"] && AllData[key]["rank"] <= 10) {
+        TrueDuration[1] += 1
+    } else if (10 < AllData[key]["rank"] && AllData[key]["rank"] <= 20) {
+        TrueDuration[2] += 1
+    };
 }
 
 for (key in StaticResource) {
@@ -48,8 +59,11 @@ for (key in StaticResource) {
 
 // ITEM INDEX
 ResourceID = {};
-for (n = 1; n <= app.project.items.length; n++) {
-    ResourceID[app.project.items[n].name] = n;
+
+function ReCountResource() {
+    for (n = 1; n <= app.project.items.length; n++) {
+        ResourceID[app.project.items[n].name] = n;
+    }
 }
 
 // FUNCTION
@@ -225,11 +239,16 @@ function BezierCurve(point1, point2, point3, point4, input_x) {
     );
 }
 
+ReCountResource();
 // Part 1
 Globaloffset = 0;
 SingleLength = 25;
+Part1.duration = TrueDuration[2] * SingleLength + TrueDuration[2] - 1
 BlackLayer = Part1.layers.addSolid([0, 0, 0], "黑底", CompSize[0], CompSize[1], 1, 1);
 for (rank = 20; rank > 10; rank -= 1) {
+    if (!(rank + "_V" in ResourceID)) {
+        continue
+    }
     RankVideoLayer = AddLayer(Part1, rank + "_V", SingleLength, Globaloffset - OffsetData[rank]);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
@@ -248,10 +267,6 @@ for (rank = 20; rank > 10; rank -= 1) {
     RankVideoLayer.property("Position").setValue([1200, 421]);
     AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset, [-Infinity, -Infinity]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + 1, [0, 0]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength - 1, [0, 0]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength, [-Infinity, -Infinity]);
     AddProgressBar(Part1, VideoSize[0], [1200, 796], SingleLength, Globaloffset, 0.7)
 
     RankVideoMask = AddLayer(Part1, "mask_20", SingleLength, Globaloffset);
@@ -287,8 +302,12 @@ Part1.openInViewer();
 // Part 2
 Globaloffset = 0;
 SingleLength = 25;
+Part2.duration = TrueDuration[1] * SingleLength + TrueDuration[1] - 1
 BlackLayer = Part2.layers.addSolid([0, 0, 0], "黑底", CompSize[0], CompSize[1], 1, 1);
 for (rank = 10; rank > 3; rank -= 1) {
+    if (!(rank + "_V" in ResourceID)) {
+        continue
+    }
     RankVideoLayer = AddLayer(Part2, rank + "_V", SingleLength, Globaloffset - OffsetData[rank]);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
@@ -307,10 +326,6 @@ for (rank = 10; rank > 3; rank -= 1) {
     RankVideoLayer.property("Position").setValue([1200, 421]);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset, 1);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset, [-Infinity, -Infinity]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + 1, [0, 0]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength - 1, [0, 0]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength, [-Infinity, -Infinity]);
     AddProgressBar(Part2, VideoSize[0], [1200, 796], SingleLength, Globaloffset, 0.7)
 
     RankVideoMask = AddLayer(Part2, "mask_10", SingleLength, Globaloffset);
@@ -344,12 +359,18 @@ Part2.openInViewer();
 
 // Part 3
 
+//app.project.items[ResourceID["next_3"]].mainSource.loop = 2;
 RankCN = ["主榜 第一名", "主榜 第二名", "主榜 第三名"];
 Globaloffset = 0;
 SingleLength = 45;
+Part3.duration = TrueDuration[0] * SingleLength + TrueDuration[0] * 5
 BlackLayer = Part3.layers.addSolid([0, 0, 0], "黑底", CompSize[0], CompSize[1], 1, 1);
 for (rank = 3; rank > 0; rank -= 1) {
     NextLayer = AddLayer(Part3, "next_3", 5, Globaloffset);
+    NextLayer.timeRemapEnabled = true
+    NextLayer.property("ADBE Time Remapping").setValueAtTime(4 + 59 / 60, 4 + 59 / 60)
+    NextLayer.property("ADBE Time Remapping").setValueAtTime(9 + 59 / 60, 4 + 59 / 60)
+    NextLayer.outPoint = Globaloffset + 5 + SingleLength
     PointTextLayer = Part3.layers.addText(PointData[rank] + " POINTS");
     PointTextLayer.startTime = Globaloffset;
     PointTextLayer.outPoint = Globaloffset + 5;
@@ -442,9 +463,12 @@ for (rank = 3; rank > 0; rank -= 1) {
 
     Globaloffset += 5;
 
-    RankVideoLayer = AddLayer(Part3, rank + "_V", SingleLength, Globaloffset - OffsetData[rank]);
-    RankVideoLayer.inPoint = Globaloffset;
-    RankVideoLayer.outPoint = Globaloffset + SingleLength;
+    PreComp = app.project.items.addComp("Pre" + rank + "_V", 1920, 1080, 1, SingleLength, 60);
+    ReCountResource();
+
+    RankVideoLayer = AddLayer(PreComp, rank + "_V", SingleLength, 0 - OffsetData[rank]);
+    RankVideoLayer.inPoint = 0;
+    RankVideoLayer.outPoint = SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);
     if (VideoItemSize.width / VideoItemSize.height >= VideoSize[0] / VideoSize[1]) {
         RankVideoLayer.property("Scale").setValue([
@@ -458,21 +482,80 @@ for (rank = 3; rank > 0; rank -= 1) {
         ]);
     }
     RankVideoLayer.property("Position").setValue([960, 540]);
-    AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset, 1);
-    AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset, [-Infinity, -Infinity]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + 1, [0, 0]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength - 1, [0, 0]);
-    //RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength, [-Infinity, -Infinity]);
-    AddProgressBar(Part3, CompSize[0], [960, 1076], SingleLength, Globaloffset, 0)
+    AddAudioProperty(RankVideoLayer, 2, 1, 0, 1);
+    AddAudioProperty(RankVideoLayer, 2, 1, SingleLength - 1, 2);
+    AddProgressBar(PreComp, CompSize[0], [960, 1076], SingleLength, 0, 0)
     MaskDuratrion = app.project.items[ResourceID["mask_3"]].duration
-    RankVideoMask = AddLayer(Part3, "mask_3", MaskDuratrion, Globaloffset);
-    RankDataLayer = AddLayer(Part3, rank + "_T", MaskDuratrion, Globaloffset);
+    RankVideoMask = AddLayer(PreComp, "mask_3", MaskDuratrion, 2);
+    RankDataLayer = AddLayer(PreComp, rank + "_T", MaskDuratrion, 2);
 
-    RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + 0.5, 0);
-    RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + 1, 100);
-    RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + MaskDuratrion - 1, 100);
-    RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + MaskDuratrion - 0.5, 0);
+    RankDataLayer.property("Opacity").setValueAtTime(2 + 0.5, 0);
+    RankDataLayer.property("Opacity").setValueAtTime(2 + 1, 100);
+    RankDataLayer.property("Opacity").setValueAtTime(2 + MaskDuratrion - 1, 100);
+    RankDataLayer.property("Opacity").setValueAtTime(2 + MaskDuratrion - 0.5, 0);
+
+    PreRankLayer = AddLayer(Part3, "Pre" + rank + "_V", SingleLength, Globaloffset)
+    Shadow = PreRankLayer.property("Effects").addProperty("ADBE Drop Shadow");
+    Shadow.property("ADBE Drop Shadow-0002").setValue(100)
+    Shadow.property("ADBE Drop Shadow-0004").setValue(0)
+    Shadow.property("ADBE Drop Shadow-0005").setValue(50)
+    Wipe = PreRankLayer.property("Effects").addProperty("ADBE Linear Wipe");
+    Wipe.property("ADBE Linear Wipe-0002").setValue(0)
+    Wipe.property("ADBE Linear Wipe-0003").setValue(5)
+    t_fps = CompFPS;
+    dest_y1 = 0;
+    dest_y2 = 100;
+    dest = dest_y2 - dest_y1;
+    c1 = 1;
+    c2 = 0;
+    P1 = [0, 0];
+    P2 = [c1 * t_fps, 0];
+    P3 = [c2 * t_fps, dest];
+    P4 = [t_fps, dest];
+    for (x = 0; x <= t_fps; x += 1) {
+        y = BezierCurve(P1, P2, P3, P4, x);
+        Wipe.property("ADBE Linear Wipe-0001").setValueAtTime(Globaloffset + x / 60, 100 - y);
+    }
+
+    t_fps = CompFPS;
+    dest_y1 = 80;
+    dest_y2 = 100;
+    dest = dest_y2 - dest_y1;
+    c1 = 1;
+    c2 = 0;
+    P1 = [0, 0];
+    P2 = [c1 * t_fps, 0];
+    P3 = [c2 * t_fps, dest];
+    P4 = [t_fps, dest];
+    for (x = 0; x <= t_fps; x += 1) {
+        y = BezierCurve(P1, P2, P3, P4, x);
+        PreRankLayer.property("Scale").setValueAtTime(Globaloffset + 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+    }
+    t_fps = CompFPS / 3;
+    c1 = 0;
+    c2 = 0;
+    P1 = [0, dest];
+    P2 = [c1 * t_fps, dest];
+    P3 = [c2 * t_fps, 0];
+    P4 = [t_fps, 0];
+    for (x = 0; x <= t_fps; x += 1) {
+        y = BezierCurve(P1, P2, P3, P4, x);
+        PreRankLayer.property("Scale").setValueAtTime(Globaloffset + SingleLength - 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+    }
+    t_fps = CompFPS / 2;
+    dest_y1 = 540;
+    dest_y2 = 1520;
+    dest = dest_y2 - dest_y1;
+    c1 = 1;
+    c2 = 0;
+    P1 = [0, 0];
+    P2 = [c1 * t_fps, 0];
+    P3 = [c2 * t_fps, dest];
+    P4 = [t_fps, dest];
+    for (x = 0; x <= t_fps; x += 1) {
+        y = BezierCurve(P1, P2, P3, P4, x);
+        PreRankLayer.property("Position").setValueAtTime(Globaloffset + SingleLength - 0.5 + (x - 1) / 60, [960, dest_y1 + y]);
+    }
 
     Globaloffset += SingleLength;
 }
