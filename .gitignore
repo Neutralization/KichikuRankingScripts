@@ -5,11 +5,13 @@ build/
 dist/
 ranking/
 venv/
+*.7z
 *.aep
 *.csv
 *.exe
 *.js
 *.json
+*.mov
 *.mp4
 *.png
 *.psd
