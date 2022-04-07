@@ -2,36 +2,36 @@
 
 app.project.close(CloseOptions.PROMPT_TO_SAVE_CHANGES);
 app.newProject();
-Part1 = app.project.items.addComp("旧稿回顾", 1920, 1080, 1, 25, 60);
+Part1 = app.project.items.addComp('旧稿回顾', 1920, 1080, 1, 25, 60);
 
 VideoSize = [1564, 880];
 CompSize = [1920, 1080];
 CompFPS = 60;
 
-StaticFolder = app.project.items.addFolder("StaticResource");
+StaticFolder = app.project.items.addFolder('StaticResource');
 StaticResource = {
-    mask: "./绿幕抠图/!旧稿回顾.mov",
-    next: "./绿幕抠图/!NEXT.mp4",
-    change: "./绿幕抠图/!NEXT 旧稿回顾.mp4",
+    mask: './绿幕抠图/!旧稿回顾.mov',
+    next: './绿幕抠图/!NEXT.mp4',
+    change: './绿幕抠图/!NEXT 旧稿回顾.mp4',
 };
 
 // LOAD DATA
-jsondata = new File("data_旧稿.json");
-jsondata.open("r");
+jsondata = new File('data_旧稿.json');
+jsondata.open('r');
 content = jsondata.read();
 jsondata.close();
 AllData = JSON.parse(content);
 
 OffsetData = {};
 for (key = 0; key < AllData.length; key++) {
-    rank = AllData[key]["rank"];
-    StaticResource[rank + "_V"] = AllData[key]["video"];
-    StaticResource[rank + "_T"] = AllData[key]["text"];
-    OffsetData[rank] = AllData[key]["offset"];
+    rank = AllData[key]['rank'];
+    StaticResource[rank + '_V'] = AllData[key]['video'];
+    StaticResource[rank + '_T'] = AllData[key]['text'];
+    OffsetData[rank] = AllData[key]['offset'];
 }
 
 for (key in StaticResource) {
-    if (typeof StaticResource[key] != "undefined") {
+    if (typeof StaticResource[key] != 'undefined') {
         ResourceFile = new ImportOptions(File(StaticResource[key]));
         ResourceFile.ImportAs = ImportAsType.FOOTAGE;
         FileItem = app.project.importFile(ResourceFile);
@@ -57,7 +57,7 @@ function AddLayer(Target, Name, Duration, Offset) {
 }
 
 function AddAudioProperty(Target, Ptype, Duration, Offset, Direction) {
-    NewProperty = Target.property("Audio Levels");
+    NewProperty = Target.property('Audio Levels');
     if (Ptype == 1) {
         // 1/4 circle
         if (Direction == 1) {
@@ -108,27 +108,27 @@ function AddAudioProperty(Target, Ptype, Duration, Offset, Direction) {
 }
 
 function AddProgressBar(Target, Length, Position, Duration, Offset, Delay) {
-    NewLayer = Target.layers.addShape()
+    NewLayer = Target.layers.addShape();
     NewLayer.startTime = Offset;
     NewLayer.outPoint = Duration + Offset;
-    NewLayer.name = "Progress"
-    VectorGroup = NewLayer.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group").addProperty("ADBE Vectors Group")
-    VectorGroup.addProperty("ADBE Vector Shape - Rect")
-    VectorGroup.addProperty("ADBE Vector Graphic - Fill")
-    VectorGroup.addProperty("ADBE Vector Graphic - Stroke")
-    VectorGroup.property("ADBE Vector Shape - Rect")
-        .property("ADBE Vector Rect Size")
-        .setValueAtTime(Offset + Delay, [0, 8])
-    VectorGroup.property("ADBE Vector Shape - Rect")
-        .property("ADBE Vector Rect Size")
-        .setValueAtTime(Offset + 0.5 + Delay, [Length, 8])
-    VectorGroup.property("ADBE Vector Shape - Rect")
-        .property("ADBE Vector Rect Size")
-        .setValueAtTime(Offset + Duration, [0, 8])
-    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Roundness").setValue(3)
-    VectorGroup.property("ADBE Vector Graphic - Fill").property("ADBE Vector Fill Color").setValue([1, 1, 1, 1])
-    VectorGroup.property("ADBE Vector Graphic - Stroke").property("ADBE Vector Stroke Width").setValue(0)
-    NewLayer.property("Position").setValue(Position)
+    NewLayer.name = 'Progress';
+    VectorGroup = NewLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+    VectorGroup.addProperty('ADBE Vector Shape - Rect');
+    VectorGroup.addProperty('ADBE Vector Graphic - Fill');
+    VectorGroup.addProperty('ADBE Vector Graphic - Stroke');
+    VectorGroup.property('ADBE Vector Shape - Rect')
+        .property('ADBE Vector Rect Size')
+        .setValueAtTime(Offset + Delay, [0, 8]);
+    VectorGroup.property('ADBE Vector Shape - Rect')
+        .property('ADBE Vector Rect Size')
+        .setValueAtTime(Offset + 0.5 + Delay, [Length, 8]);
+    VectorGroup.property('ADBE Vector Shape - Rect')
+        .property('ADBE Vector Rect Size')
+        .setValueAtTime(Offset + Duration, [0, 8]);
+    VectorGroup.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(3);
+    VectorGroup.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color').setValue([1, 1, 1, 1]);
+    VectorGroup.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(0);
+    NewLayer.property('Position').setValue(Position);
 }
 
 function BezierCurve(point1, point2, point3, point4, input_x) {
@@ -229,43 +229,43 @@ SingleLength = 25;
 LastRank = 0;
 
 for (key in AllData) {
-    if (AllData[key]["rank"] > LastRank) {
-        LastRank = AllData[key]["rank"];
+    if (AllData[key]['rank'] > LastRank) {
+        LastRank = AllData[key]['rank'];
     }
 }
 Part1.duration = LastRank * SingleLength + LastRank + 4;
-BlackLayer = Part1.layers.addSolid([0, 0, 0], "黑底", CompSize[0], CompSize[1], 1, 1);
-BlackLayer.outPoint = Part1.duration;
-ChangeLayer = AddLayer(Part1, "change", 5, 0);
-ChangeLayer.timeRemapEnabled = true
-ChangeLayer.property("ADBE Time Remapping").setValueAtTime(4 + 59 / 60, 4 + 59 / 60)
-ChangeLayer.property("ADBE Time Remapping").setValueAtTime(9 + 59 / 60, 4 + 59 / 60)
-ChangeLayer.outPoint = 5 + SingleLength
+// BlackLayer = Part1.layers.addSolid([0, 0, 0], "黑底", CompSize[0], CompSize[1], 1, 1);
+// BlackLayer.outPoint = Part1.duration;
+ChangeLayer = AddLayer(Part1, 'change', 5, 0);
+ChangeLayer.timeRemapEnabled = true;
+ChangeLayer.property('ADBE Time Remapping').setValueAtTime(4 + 59 / 60, 4 + 59 / 60);
+ChangeLayer.property('ADBE Time Remapping').setValueAtTime(9 + 59 / 60, 4 + 59 / 60);
+ChangeLayer.outPoint = Part1.duration;
 Globaloffset += 5;
 
 for (rank = 1; rank <= LastRank; rank += 1) {
-    PreComp = app.project.items.addComp("Pre" + rank + "_V", 1920, 1080, 1, SingleLength, 60);
+    PreComp = app.project.items.addComp('Pre' + rank + '_V', 1920, 1080, 1, SingleLength, 60);
     ReCountResource();
-    //BlackLayer = PreComp.layers.addSolid([0, 0, 0], "黑底", CompSize[0], CompSize[1], 1, 1);
-    //BlackLayer.outPoint = PreComp.duration;
+    BlackLayer = PreComp.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
+    BlackLayer.outPoint = PreComp.duration;
 
-    RankVideoLayer = AddLayer(PreComp, rank + "_V", SingleLength, 0 - OffsetData[rank]);
+    RankVideoLayer = AddLayer(PreComp, rank + '_V', SingleLength, 0 - OffsetData[rank]);
     RankVideoLayer.inPoint = 0;
     RankVideoLayer.outPoint = SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);
-    if (VideoItemSize.width / VideoItemSize.height >= VideoSize[0] / VideoSize[1]) {
-        RankVideoLayer.property("Scale").setValue([
-            (VideoSize[0] / VideoItemSize.width) * 100,
-            (VideoSize[0] / VideoItemSize.width) * 100,
+    if (VideoItemSize.width / VideoItemSize.height >= CompSize[0] / CompSize[1]) {
+        RankVideoLayer.property('Scale').setValue([
+            (CompSize[0] / VideoItemSize.width) * 100,
+            (CompSize[0] / VideoItemSize.width) * 100,
         ]);
     } else {
-        RankVideoLayer.property("Scale").setValue([
-            (VideoSize[1] / VideoItemSize.height) * 100,
-            (VideoSize[1] / VideoItemSize.height) * 100,
+        RankVideoLayer.property('Scale').setValue([
+            (CompSize[1] / VideoItemSize.height) * 100,
+            (CompSize[1] / VideoItemSize.height) * 100,
         ]);
     }
-    RankVideoLayer.property("Position").setValue([960, 574]);
-    AddProgressBar(PreComp, VideoSize[0], [960, 1010], SingleLength - 1, 0, 0)
+    RankVideoLayer.property('Position').setValue([960, 540]);
+    AddProgressBar(PreComp, CompSize[0], [960, 1074], SingleLength - 1, 0, 0);
     t_fps = 2 * CompFPS;
     dest_y1 = -35;
     dest_y2 = 0;
@@ -278,30 +278,30 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P4 = [t_fps, dest];
     for (x = 0; x <= t_fps; x += 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property("Audio Levels").setValueAtTime(x / 60, [dest_y1 + y, dest_y1 + y]);
+        RankVideoLayer.property('Audio Levels').setValueAtTime(x / 60, [dest_y1 + y, dest_y1 + y]);
     }
     for (x = t_fps; x >= 0; x -= 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property("Audio Levels").setValueAtTime(SingleLength - 2 + (t_fps - x) / 60, [
+        RankVideoLayer.property('Audio Levels').setValueAtTime(SingleLength - 2 + (t_fps - x) / 60, [
             dest_y1 + y,
             dest_y1 + y,
         ]);
     }
 
-    RankVideoMask = AddLayer(PreComp, "mask", SingleLength, 0);
-    RankDataLayer = AddLayer(PreComp, rank + "_T", SingleLength, 0);
-    RankDataLayer.property("Opacity").setValueAtTime(1, 0);
-    RankDataLayer.property("Opacity").setValueAtTime(1.5, 100);
-    RankDataLayer.property("Opacity").setValueAtTime(SingleLength - 1.5, 100);
-    RankDataLayer.property("Opacity").setValueAtTime(SingleLength - 1, 0);
-    PreRankLayer = AddLayer(Part1, "Pre" + rank + "_V", SingleLength, Globaloffset)
-    Shadow = PreRankLayer.property("Effects").addProperty("ADBE Drop Shadow");
-    Shadow.property("ADBE Drop Shadow-0002").setValue(100)
-    Shadow.property("ADBE Drop Shadow-0004").setValue(0)
-    Shadow.property("ADBE Drop Shadow-0005").setValue(50)
-    Wipe = PreRankLayer.property("Effects").addProperty("ADBE Linear Wipe");
-    Wipe.property("ADBE Linear Wipe-0002").setValue(0)
-    Wipe.property("ADBE Linear Wipe-0003").setValue(5)
+    RankVideoMask = AddLayer(PreComp, 'mask', SingleLength, 0);
+    RankDataLayer = AddLayer(PreComp, rank + '_T', SingleLength, 0);
+    RankDataLayer.property('Opacity').setValueAtTime(1, 0);
+    RankDataLayer.property('Opacity').setValueAtTime(1.5, 100);
+    RankDataLayer.property('Opacity').setValueAtTime(SingleLength - 1.5, 100);
+    RankDataLayer.property('Opacity').setValueAtTime(SingleLength - 1, 0);
+    PreRankLayer = AddLayer(Part1, 'Pre' + rank + '_V', SingleLength, Globaloffset);
+    Shadow = PreRankLayer.property('Effects').addProperty('ADBE Drop Shadow');
+    Shadow.property('ADBE Drop Shadow-0002').setValue(100);
+    Shadow.property('ADBE Drop Shadow-0004').setValue(0);
+    Shadow.property('ADBE Drop Shadow-0005').setValue(50);
+    Wipe = PreRankLayer.property('Effects').addProperty('ADBE Linear Wipe');
+    Wipe.property('ADBE Linear Wipe-0002').setValue(0);
+    Wipe.property('ADBE Linear Wipe-0003').setValue(5);
     t_fps = CompFPS;
     dest_y1 = 0;
     dest_y2 = 100;
@@ -314,7 +314,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P4 = [t_fps, dest];
     for (x = 0; x <= t_fps; x += 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        Wipe.property("ADBE Linear Wipe-0001").setValueAtTime(Globaloffset + x / 60, 100 - y);
+        Wipe.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset + x / 60, 100 - y);
     }
 
     t_fps = CompFPS;
@@ -329,7 +329,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P4 = [t_fps, dest];
     for (x = 0; x <= t_fps; x += 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        PreRankLayer.property("Scale").setValueAtTime(Globaloffset + 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+        PreRankLayer.property('Scale').setValueAtTime(Globaloffset + 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
     }
     t_fps = CompFPS / 3;
     c1 = 0;
@@ -340,7 +340,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P4 = [t_fps, 0];
     for (x = 0; x <= t_fps; x += 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        PreRankLayer.property("Scale").setValueAtTime(Globaloffset + SingleLength - 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+        PreRankLayer.property('Scale').setValueAtTime(Globaloffset + SingleLength - 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
     }
     t_fps = CompFPS / 2;
     dest_y1 = 540;
@@ -354,18 +354,18 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P4 = [t_fps, dest];
     for (x = 0; x <= t_fps; x += 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        PreRankLayer.property("Position").setValueAtTime(Globaloffset + SingleLength - 0.5 + (x - 1) / 60, [960, dest_y1 + y]);
+        PreRankLayer.property('Position').setValueAtTime(Globaloffset + SingleLength - 0.5 + (x - 1) / 60, [960, dest_y1 + y]);
     }
 
     if (rank == LastRank) {
         addNext = 0;
     } else {
         addNext = 1;
-        NextLayer = AddLayer(Part1, "next", 1, Globaloffset + SingleLength);
-        NextLayer.timeRemapEnabled = true
-        NextLayer.property("ADBE Time Remapping").setValueAtTime(59 / 60, 59 / 60)
-        NextLayer.property("ADBE Time Remapping").setValueAtTime(1 + 59 / 60, 59 / 60)
-        NextLayer.outPoint = Globaloffset + SingleLength * 2 + 1
+        NextLayer = AddLayer(Part1, 'next', 1, Globaloffset + SingleLength);
+        // NextLayer.timeRemapEnabled = true
+        // NextLayer.property("ADBE Time Remapping").setValueAtTime(59 / 60, 59 / 60)
+        // NextLayer.property("ADBE Time Remapping").setValueAtTime(1 + 59 / 60, 59 / 60)
+        // NextLayer.outPoint = Globaloffset + SingleLength * 2 + 1
     }
     Globaloffset += SingleLength + addNext;
 }
