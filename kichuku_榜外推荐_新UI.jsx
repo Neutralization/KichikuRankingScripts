@@ -2,39 +2,39 @@
 
 app.project.close(CloseOptions.PROMPT_TO_SAVE_CHANGES);
 app.newProject();
-Part1 = app.project.items.addComp("榜外推荐", 1920, 1080, 1, 1, 60);
-Part2 = app.project.items.addComp("经典推荐", 1920, 1080, 1, 30, 60);
+Part1 = app.project.items.addComp('榜外推荐', 1920, 1080, 1, 1, 60);
+Part2 = app.project.items.addComp('经典推荐', 1920, 1080, 1, 30, 60);
 
 VideoSize = [1404, 790];
 CompSize = [1920, 1080];
 CompFPS = 60;
 
-StaticFolder = app.project.items.addFolder("StaticResource");
+StaticFolder = app.project.items.addFolder('StaticResource');
 StaticResource = {
-    mask: "./绿幕抠图/!榜外推荐2.mp4",
-    mask2: "./绿幕抠图/!经典推荐2.mp4",
-    next: "./绿幕抠图/!NEXT.mp4",
-    change: "./绿幕抠图/!NEXT 榜外推荐.mp4",
-    change2: "./绿幕抠图/!NEXT 经典推荐.mp4",
+    mask: './绿幕抠图/!榜外推荐2.mp4',
+    mask2: './绿幕抠图/!经典推荐2.mp4',
+    next: './绿幕抠图/!NEXT.mp4',
+    change: './绿幕抠图/!NEXT 榜外推荐.mp4',
+    change2: './绿幕抠图/!NEXT 经典推荐.mp4',
 };
 
 // LOAD DATA
-jsondata = new File("data_经典&冷门.json");
-jsondata.open("r");
+jsondata = new File('data_经典&冷门.json');
+jsondata.open('r');
 content = jsondata.read();
 jsondata.close();
 AllData = JSON.parse(content);
 
 OffsetData = {};
 for (key in AllData) {
-    rank = AllData[key]["rank"];
-    StaticResource[rank + "_V"] = AllData[key]["video"];
-    StaticResource[rank + "_T"] = AllData[key]["text"];
-    OffsetData[rank] = AllData[key]["offset"];
+    rank = AllData[key]['rank'];
+    StaticResource[rank + '_V'] = AllData[key]['video'];
+    StaticResource[rank + '_T'] = AllData[key]['text'];
+    OffsetData[rank] = AllData[key]['offset'];
 }
 
 for (key in StaticResource) {
-    if (typeof StaticResource[key] != "undefined") {
+    if (typeof StaticResource[key] != 'undefined') {
         ResourceFile = new ImportOptions(File(StaticResource[key]));
         ResourceFile.ImportAs = ImportAsType.FOOTAGE;
         FileItem = app.project.importFile(ResourceFile);
@@ -57,7 +57,7 @@ function AddLayer(Target, Name, Duration, Offset) {
 }
 
 function AddAudioProperty(Target, Ptype, Duration, Offset, Direction) {
-    NewProperty = Target.property("Audio Levels");
+    NewProperty = Target.property('Audio Levels');
     if (Ptype == 1) {
         // 1/4 circle
         if (Direction == 1) {
@@ -108,27 +108,27 @@ function AddAudioProperty(Target, Ptype, Duration, Offset, Direction) {
 }
 
 function AddProgressBar(Target, Length, Position, Duration, Offset, Delay) {
-    NewLayer = Target.layers.addShape()
+    NewLayer = Target.layers.addShape();
     NewLayer.startTime = Offset;
     NewLayer.outPoint = Duration + Offset;
-    NewLayer.name = "Progress"
-    VectorGroup = NewLayer.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group").addProperty("ADBE Vectors Group")
-    VectorGroup.addProperty("ADBE Vector Shape - Rect")
-    VectorGroup.addProperty("ADBE Vector Graphic - Fill")
-    VectorGroup.addProperty("ADBE Vector Graphic - Stroke")
-    VectorGroup.property("ADBE Vector Shape - Rect")
-        .property("ADBE Vector Rect Size")
-        .setValueAtTime(Offset + Delay, [0, 8])
-    VectorGroup.property("ADBE Vector Shape - Rect")
-        .property("ADBE Vector Rect Size")
-        .setValueAtTime(Offset + 0.5 + Delay, [Length, 8])
-    VectorGroup.property("ADBE Vector Shape - Rect")
-        .property("ADBE Vector Rect Size")
-        .setValueAtTime(Offset + Duration, [0, 8])
-    VectorGroup.property("ADBE Vector Shape - Rect").property("ADBE Vector Rect Roundness").setValue(3)
-    VectorGroup.property("ADBE Vector Graphic - Fill").property("ADBE Vector Fill Color").setValue([1, 1, 1, 1])
-    VectorGroup.property("ADBE Vector Graphic - Stroke").property("ADBE Vector Stroke Width").setValue(0)
-    NewLayer.property("Position").setValue(Position)
+    NewLayer.name = 'Progress';
+    VectorGroup = NewLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+    VectorGroup.addProperty('ADBE Vector Shape - Rect');
+    VectorGroup.addProperty('ADBE Vector Graphic - Fill');
+    VectorGroup.addProperty('ADBE Vector Graphic - Stroke');
+    VectorGroup.property('ADBE Vector Shape - Rect')
+        .property('ADBE Vector Rect Size')
+        .setValueAtTime(Offset + Delay, [0, 8]);
+    VectorGroup.property('ADBE Vector Shape - Rect')
+        .property('ADBE Vector Rect Size')
+        .setValueAtTime(Offset + 0.5 + Delay, [Length, 8]);
+    VectorGroup.property('ADBE Vector Shape - Rect')
+        .property('ADBE Vector Rect Size')
+        .setValueAtTime(Offset + Duration, [0, 8]);
+    VectorGroup.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(3);
+    VectorGroup.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color').setValue([1, 1, 1, 1]);
+    VectorGroup.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(0);
+    NewLayer.property('Position').setValue(Position);
 }
 
 function BezierCurve(point1, point2, point3, point4, input_x) {
@@ -227,36 +227,36 @@ Globaloffset = 0;
 SingleLength = 25;
 LastRank = 0;
 for (key in AllData) {
-    if (AllData[key]["rank"] > LastRank) {
-        LastRank = AllData[key]["rank"];
+    if (AllData[key]['rank'] > LastRank) {
+        LastRank = AllData[key]['rank'];
     }
 }
 Part1.duration = LastRank * SingleLength + LastRank + 4;
-BlackLayer = Part1.layers.addSolid([0, 0, 0], "黑底", CompSize[0], CompSize[1], 1, 1);
+BlackLayer = Part1.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
 BlackLayer.outPoint = Part1.duration;
-ChangeLayer = AddLayer(Part1, "change", 5, 0);
+ChangeLayer = AddLayer(Part1, 'change', 5, 0);
 Globaloffset += 5;
 
 for (rank = 1; rank <= LastRank; rank += 1) {
-    RankVideoLayer = AddLayer(Part1, rank + "_V", SingleLength, Globaloffset - OffsetData[rank]);
+    RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);
     if (VideoItemSize.width / VideoItemSize.height >= VideoSize[0] / VideoSize[1]) {
-        RankVideoLayer.property("Scale").setValue([
+        RankVideoLayer.property('Scale').setValue([
             (VideoSize[0] / VideoItemSize.width) * 100,
             (VideoSize[0] / VideoItemSize.width) * 100,
         ]);
     } else {
-        RankVideoLayer.property("Scale").setValue([
+        RankVideoLayer.property('Scale').setValue([
             (VideoSize[1] / VideoItemSize.height) * 100,
             (VideoSize[1] / VideoItemSize.height) * 100,
         ]);
     }
-    RankVideoLayer.property("Position").setValue([1148, 540]);
+    RankVideoLayer.property('Position').setValue([1148, 540]);
     // AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
     // AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
-    AddProgressBar(Part1, VideoSize[0], [1148, 930], SingleLength - 1, Globaloffset, 0.75)
+    AddProgressBar(Part1, VideoSize[0], [1148, 930], SingleLength - 1, Globaloffset, 0.75);
     t_fps = 2 * CompFPS;
     dest_y1 = -35;
     dest_y2 = 0;
@@ -269,37 +269,37 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P4 = [t_fps, dest];
     for (x = 0; x <= t_fps; x += 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + x / 60, [dest_y1 + y, dest_y1 + y]);
+        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + x / 60, [dest_y1 + y, dest_y1 + y]);
     }
     for (x = t_fps; x >= 0; x -= 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - x) / 60, [
+        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - x) / 60, [
             dest_y1 + y,
             dest_y1 + y,
         ]);
     }
-    RankVideoMask = AddLayer(Part1, "mask", SingleLength, Globaloffset);
-    GreenMask = RankVideoMask.property("Effects").addProperty("Keylight 906");
-    GreenMask.property("Screen Colour").setValue([0.2, 1, 0]);
-    GreenMask.property("Alpha Bias").setValue([0.5, 0.5, 0.5]);
-    GreenMask.property("Despill Bias").setValue([0.5, 0.5, 0.5]);
-    GreenMask.property("Unpremultiply Result").setValue(null);
+    RankVideoMask = AddLayer(Part1, 'mask', SingleLength, Globaloffset);
+    GreenMask = RankVideoMask.property('Effects').addProperty('Keylight 906');
+    GreenMask.property('Screen Colour').setValue([0.2, 1, 0]);
+    GreenMask.property('Alpha Bias').setValue([0.5, 0.5, 0.5]);
+    GreenMask.property('Despill Bias').setValue([0.5, 0.5, 0.5]);
+    GreenMask.property('Unpremultiply Result').setValue(null);
     //RankVideoMask2 = AddLayer(Part1, "mask", SingleLength, Globaloffset);
     //RankVideoMask2.mask.addProperty("Mask");
     //RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
     //RankVideoMask2.mask(1).inverted = true;
     //RankVideoMask2.mask(1).property(1).expression =
     //    "mask(1).maskPath = createPath(points=[[440,140], [1855,140], [1855,940], [440,940]], inTangents=[], outTangents=[], is_closed=true)";
-    RankDataLayer = AddLayer(Part1, rank + "_T", SingleLength, Globaloffset);
-    RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + 1, 0);
-    RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + 2, 100);
-    RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + SingleLength - 2, 100);
-    RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + SingleLength - 1, 0);
+    RankDataLayer = AddLayer(Part1, rank + '_T', SingleLength, Globaloffset);
+    RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 1, 0);
+    RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 2, 100);
+    RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + SingleLength - 2, 100);
+    RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + SingleLength - 1, 0);
     if (rank == LastRank) {
         addNext = 0;
     } else {
         addNext = 1;
-        NextLayer = AddLayer(Part1, "next", 1, Globaloffset + SingleLength);
+        NextLayer = AddLayer(Part1, 'next', 1, Globaloffset + SingleLength);
     }
     Globaloffset += SingleLength + addNext;
 }
@@ -309,29 +309,29 @@ Part1.openInViewer();
 Globaloffset = 0;
 SingleLength = 25;
 rank = 0;
-BlackLayer = Part2.layers.addSolid([0, 0, 0], "黑底", CompSize[0], CompSize[1], 1, 1);
+BlackLayer = Part2.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
 BlackLayer.outPoint = Part2.duration;
-ChangeLayer = AddLayer(Part2, "change2", 5, 0);
+ChangeLayer = AddLayer(Part2, 'change2', 5, 0);
 Globaloffset += 5;
-RankVideoLayer = AddLayer(Part2, rank + "_V", SingleLength, Globaloffset - OffsetData[rank]);
+RankVideoLayer = AddLayer(Part2, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
 RankVideoLayer.inPoint = Globaloffset;
 RankVideoLayer.outPoint = Globaloffset + SingleLength;
 VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);
 if (VideoItemSize.width / VideoItemSize.height >= VideoSize[0] / VideoSize[1]) {
-    RankVideoLayer.property("Scale").setValue([
+    RankVideoLayer.property('Scale').setValue([
         (VideoSize[0] / VideoItemSize.width) * 100,
         (VideoSize[0] / VideoItemSize.width) * 100,
     ]);
 } else {
-    RankVideoLayer.property("Scale").setValue([
+    RankVideoLayer.property('Scale').setValue([
         (VideoSize[1] / VideoItemSize.height) * 100,
         (VideoSize[1] / VideoItemSize.height) * 100,
     ]);
 }
-RankVideoLayer.property("Position").setValue([1148, 540]);
+RankVideoLayer.property('Position').setValue([1148, 540]);
 //AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
 //AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
-AddProgressBar(Part2, VideoSize[0], [1148, 930], SingleLength - 1, Globaloffset, 0.75)
+AddProgressBar(Part2, VideoSize[0], [1148, 930], SingleLength - 1, Globaloffset, 0.75);
 t_fps = 2 * CompFPS;
 dest_y1 = -35;
 dest_y2 = 0;
@@ -344,30 +344,30 @@ P3 = [c2 * t_fps, dest];
 P4 = [t_fps, dest];
 for (x = 0; x <= t_fps; x += 1) {
     y = BezierCurve(P1, P2, P3, P4, x);
-    RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + x / 60, [dest_y1 + y, dest_y1 + y]);
+    RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + x / 60, [dest_y1 + y, dest_y1 + y]);
 }
 for (x = t_fps; x >= 0; x -= 1) {
     y = BezierCurve(P1, P2, P3, P4, x);
-    RankVideoLayer.property("Audio Levels").setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - x) / 60, [
+    RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - x) / 60, [
         dest_y1 + y,
         dest_y1 + y,
     ]);
 }
-RankVideoMask = AddLayer(Part2, "mask2", SingleLength, Globaloffset);
-GreenMask = RankVideoMask.property("Effects").addProperty("Keylight 906");
-GreenMask.property("Screen Colour").setValue([0.2, 1, 0]);
-GreenMask.property("Alpha Bias").setValue([0.5, 0.5, 0.5]);
-GreenMask.property("Despill Bias").setValue([0.5, 0.5, 0.5]);
-GreenMask.property("Unpremultiply Result").setValue(null);
+RankVideoMask = AddLayer(Part2, 'mask2', SingleLength, Globaloffset);
+GreenMask = RankVideoMask.property('Effects').addProperty('Keylight 906');
+GreenMask.property('Screen Colour').setValue([0.2, 1, 0]);
+GreenMask.property('Alpha Bias').setValue([0.5, 0.5, 0.5]);
+GreenMask.property('Despill Bias').setValue([0.5, 0.5, 0.5]);
+GreenMask.property('Unpremultiply Result').setValue(null);
 //RankVideoMask2 = AddLayer(Part2, "mask2", SingleLength, Globaloffset);
 //RankVideoMask2.mask.addProperty("Mask");
 //RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
 //RankVideoMask2.mask(1).inverted = true;
 //RankVideoMask2.mask(1).property(1).expression =
 //    "mask(1).maskPath = createPath(points=[[440,140], [1855,140], [1855,940], [440,940]], inTangents=[], outTangents=[], is_closed=true)";
-RankDataLayer = AddLayer(Part2, rank + "_T", SingleLength, Globaloffset);
-RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + 1, 0);
-RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + 2, 100);
-RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + SingleLength - 2, 100);
-RankDataLayer.property("Opacity").setValueAtTime(Globaloffset + SingleLength - 1, 0);
+RankDataLayer = AddLayer(Part2, rank + '_T', SingleLength, Globaloffset);
+RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 1, 0);
+RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 2, 100);
+RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + SingleLength - 2, 100);
+RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + SingleLength - 1, 0);
 Part2.openInViewer();
