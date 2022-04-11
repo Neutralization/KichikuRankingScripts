@@ -112,7 +112,8 @@ function AddProgressBar(Target, Length, Position, Duration, Offset, Delay) {
     NewLayer.startTime = Offset;
     NewLayer.outPoint = Duration + Offset;
     NewLayer.name = 'Progress';
-    VectorGroup = NewLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+    VectorGroup = NewLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group')
+        .addProperty('ADBE Vectors Group');
     VectorGroup.addProperty('ADBE Vector Shape - Rect');
     VectorGroup.addProperty('ADBE Vector Graphic - Fill');
     VectorGroup.addProperty('ADBE Vector Graphic - Stroke');
@@ -256,7 +257,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     RankVideoLayer.property('Position').setValue([1148, 540]);
     // AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
     // AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
-    AddProgressBar(Part1, VideoSize[0], [1148, 930], SingleLength - 1, Globaloffset, 0.75);
+    AddProgressBar(Part1, VideoSize[0], [1148, 930], SingleLength - 0.5, Globaloffset, 0.75);
     t_fps = 2 * CompFPS;
     dest_y1 = -35;
     dest_y2 = 0;
@@ -284,12 +285,13 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     GreenMask.property('Alpha Bias').setValue([0.5, 0.5, 0.5]);
     GreenMask.property('Despill Bias').setValue([0.5, 0.5, 0.5]);
     GreenMask.property('Unpremultiply Result').setValue(null);
-    //RankVideoMask2 = AddLayer(Part1, "mask", SingleLength, Globaloffset);
-    //RankVideoMask2.mask.addProperty("Mask");
-    //RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
-    //RankVideoMask2.mask(1).inverted = true;
-    //RankVideoMask2.mask(1).property(1).expression =
-    //    "mask(1).maskPath = createPath(points=[[440,140], [1855,140], [1855,940], [440,940]], inTangents=[], outTangents=[], is_closed=true)";
+    // RankVideoMask2 = AddLayer(Part1, 'mask', SingleLength, Globaloffset);
+    // RankVideoMask2.mask.addProperty('Mask');
+    // RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
+    // RankVideoMask2.mask(1).inverted = true;
+    // RankVideoMask2.mask(1).property(1).expression =
+    //     'mask(1).maskPath = createPath(points=[[440,140], [1855,140], [1855,940], [440,940]], ' +
+    //     'inTangents=[], outTangents=[], is_closed=true)';
     RankDataLayer = AddLayer(Part1, rank + '_T', SingleLength, Globaloffset);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 1, 0);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 2, 100);
@@ -329,9 +331,9 @@ if (VideoItemSize.width / VideoItemSize.height >= VideoSize[0] / VideoSize[1]) {
     ]);
 }
 RankVideoLayer.property('Position').setValue([1148, 540]);
-//AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
-//AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
-AddProgressBar(Part2, VideoSize[0], [1148, 930], SingleLength - 1, Globaloffset, 0.75);
+// AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
+// AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
+AddProgressBar(Part2, VideoSize[0], [1148, 930], SingleLength - 0.5, Globaloffset, 0.75);
 t_fps = 2 * CompFPS;
 dest_y1 = -35;
 dest_y2 = 0;
@@ -359,12 +361,13 @@ GreenMask.property('Screen Colour').setValue([0.2, 1, 0]);
 GreenMask.property('Alpha Bias').setValue([0.5, 0.5, 0.5]);
 GreenMask.property('Despill Bias').setValue([0.5, 0.5, 0.5]);
 GreenMask.property('Unpremultiply Result').setValue(null);
-//RankVideoMask2 = AddLayer(Part2, "mask2", SingleLength, Globaloffset);
-//RankVideoMask2.mask.addProperty("Mask");
-//RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
-//RankVideoMask2.mask(1).inverted = true;
-//RankVideoMask2.mask(1).property(1).expression =
-//    "mask(1).maskPath = createPath(points=[[440,140], [1855,140], [1855,940], [440,940]], inTangents=[], outTangents=[], is_closed=true)";
+// RankVideoMask2 = AddLayer(Part2, 'mask2', SingleLength, Globaloffset);
+// RankVideoMask2.mask.addProperty('Mask');
+// RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
+// RankVideoMask2.mask(1).inverted = true;
+// RankVideoMask2.mask(1).property(1).expression =
+//     'mask(1).maskPath = createPath(points=[[440,140], [1855,140], [1855,940], [440,940]], ' +
+//     'inTangents=[], outTangents=[], is_closed=true)';
 RankDataLayer = AddLayer(Part2, rank + '_T', SingleLength, Globaloffset);
 RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 1, 0);
 RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 2, 100);

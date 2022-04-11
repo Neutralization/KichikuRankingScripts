@@ -110,7 +110,8 @@ function AddProgressBar(Target, Length, Position, Duration, Offset, Delay) {
     NewLayer.startTime = Offset;
     NewLayer.outPoint = Duration + Offset;
     NewLayer.name = 'Progress';
-    VectorGroup = NewLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+    VectorGroup = NewLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group')
+        .addProperty('ADBE Vectors Group');
     VectorGroup.addProperty('ADBE Vector Shape - Rect');
     VectorGroup.addProperty('ADBE Vector Graphic - Fill');
     VectorGroup.addProperty('ADBE Vector Graphic - Stroke');
@@ -254,7 +255,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     RankVideoLayer.property('Position').setValue([1200, 421]);
     // AddAudioProperty(RankVideoLayer, 2, 2, Globaloffset, 1, 1);
     // AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + SingleLength - 1, 2);
-    AddProgressBar(Part1, VideoSize[0], [1200, 796], SingleLength - 1, Globaloffset, 0.75);
+    AddProgressBar(Part1, VideoSize[0], [1200, 796], SingleLength - 0.5, Globaloffset, 0.75);
     t_fps = 2 * CompFPS;
     dest_y1 = -35;
     dest_y2 = 0;
@@ -287,7 +288,8 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
     RankVideoMask2.mask(1).inverted = true;
     RankVideoMask2.mask(1).property(1).expression =
-        'mask(1).maskPath = createPath(points=[[525,40], [1875,40], [1875,805], [525,805]], inTangents=[], outTangents=[], is_closed=true)';
+        'mask(1).maskPath = createPath(points=[[525,40], [1875,40], [1875,805], [525,805]], ' +
+        'inTangents=[], outTangents=[], is_closed=true)';
     RankDataLayer = AddLayer(Part1, rank + '_T', SingleLength, Globaloffset);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 1, 0);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 2, 100);
