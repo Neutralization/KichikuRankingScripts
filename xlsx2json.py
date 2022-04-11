@@ -55,8 +55,8 @@ def xlsx2json(filename, ranktype):
         if ranktype == "主榜":
             videos = [
                 x["aid"]
-                for x in xlsx_data
-                if isinstance(x["排名"], int) and x["排名"] <= 20
+                for x in xlsx_data[:20]
+                if isinstance(x["排名"], int)  # and x["排名"] <= 20
             ]
             list(map(lambda x: f.write(f"av{x}\n"), videos))
         if ranktype == "旧稿":
@@ -71,12 +71,12 @@ def xlsx2json(filename, ranktype):
     if ranktype == "主榜":
         point_data = {
             x["排名"]: x["总分"]
-            for x in xlsx_data
-            if isinstance(x["排名"], int) and x["排名"] <= 21
+            for x in xlsx_data[:21]
+            if isinstance(x["排名"], int)  # and x["排名"] <= 21
         }
         json_data = [
             {
-                "rank": x["排名"],
+                "rank": n + 1,
                 "video": f"./主榜视频/av{x['aid']}.mp4",
                 "text": f"./主榜3-1/Rank_{n+1}.png"
                 if n + 1 <= 3
@@ -89,8 +89,8 @@ def xlsx2json(filename, ranktype):
                 else "",
                 "offset": 0,
             }
-            for n, x in enumerate(xlsx_data)
-            if x["排名"] <= 20
+            for n, x in enumerate(xlsx_data[:20])
+            # if x["排名"] <= 20
         ]
         data = dumps(json_data, indent=4, ensure_ascii=False)
         with open("data.json", "w", encoding="utf-8") as f:
