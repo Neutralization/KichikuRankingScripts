@@ -12,8 +12,8 @@ CompFPS = 60;
 
 StaticFolder = app.project.items.addFolder('StaticResource');
 StaticResource = {
-    mask_20: './绿幕抠图/20-11.mp4',
-    mask_10: './绿幕抠图/!主榜 10-4-2.mp4',
+    mask_20: './绿幕抠图/!主榜 20-11绿幕.mp4',
+    mask_10: './绿幕抠图/!主榜 10-4绿幕.mp4',
     next_3: './绿幕抠图/!NEXT 主榜.mp4',
     next: './绿幕抠图/!NEXT.mp4',
     bf: './绿幕抠图/播放量.png',
@@ -22,7 +22,7 @@ StaticResource = {
     pl: './绿幕抠图/评论.png',
     sc: './绿幕抠图/收藏.png',
     tb: './绿幕抠图/投币.png',
-    '弥散渐变 紫': './绿幕抠图/弥散渐变 紫.mp4',
+    effect: './绿幕抠图/弥散渐变 紫.mp4',
 };
 
 // LOAD DATA
@@ -135,7 +135,8 @@ function AddProgressBar(Target, Length, Position, Duration, Offset, Delay) {
     NewLayer.startTime = Offset;
     NewLayer.outPoint = Duration + Offset;
     NewLayer.name = 'Progress';
-    VectorGroup = NewLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group').addProperty('ADBE Vectors Group');
+    VectorGroup = NewLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group')
+        .addProperty('ADBE Vectors Group');
     VectorGroup.addProperty('ADBE Vector Shape - Rect');
     VectorGroup.addProperty('ADBE Vector Graphic - Fill');
     VectorGroup.addProperty('ADBE Vector Graphic - Stroke');
@@ -286,7 +287,8 @@ for (rank = 20; rank > 10; rank -= 1) {
     RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
     RankVideoMask2.mask(1).inverted = true;
     RankVideoMask2.mask(1).property(1).expression =
-        'mask(1).maskPath = createPath(points=[[525,40], [1875,40], [1875,805], [525,805]], inTangents=[], outTangents=[], is_closed=true)';
+        'mask(1).maskPath = createPath(points=[[525,40], [1875,40], [1875,805], [525,805]], ' +
+        'inTangents=[], outTangents=[], is_closed=true)';
 
     RankDataLayer = AddLayer(Part1, rank + '_T', SingleLength, Globaloffset);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 1, 0);
@@ -345,7 +347,8 @@ for (rank = 10; rank > 3; rank -= 1) {
     RankVideoMask2.mask(1).maskMode = MaskMode.ADD;
     RankVideoMask2.mask(1).inverted = true;
     RankVideoMask2.mask(1).property(1).expression =
-        'mask(1).maskPath = createPath(points=[[525,40], [1875,40], [1875,805], [525,805]], inTangents=[], outTangents=[], is_closed=true)';
+        'mask(1).maskPath = createPath(points=[[525,40], [1875,40], [1875,805], [525,805]], ' +
+        'inTangents=[], outTangents=[], is_closed=true)';
     RankDataLayer = AddLayer(Part2, rank + '_T', SingleLength, Globaloffset);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 1, 0);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 2, 100);
@@ -389,8 +392,9 @@ for (rank = 3; rank > 0; rank -= 1) {
     PointTextDocument.applyStroke = false;
     PointTextLayer.property('Source Text').setValue(PointTextDocument);
     PointTextLayer.property('Source Text').expression =
-        'text.sourceText.createStyle().setFont("Montserrat-SemiBold").setFillColor(hexToRgb("9049C6")).setFontSize(44).setLeading(260);';
-    PointTextLayer.property('Source Text').expression.enabled = false;
+        'text.sourceText.createStyle().setFont("Montserrat-SemiBold")' +
+        '.setFillColor(hexToRgb("9049C6")).setFontSize(44).setLeading(260);';
+    PointTextLayer.property('Source Text').expression.enabled = true;
     PointTextLayer.property('Position').setValue([-105, 749]);
 
     t_fps = 68;
@@ -434,8 +438,9 @@ for (rank = 3; rank > 0; rank -= 1) {
     RankTextDocument.applyStroke = false;
     RankTextLayer.property('Source Text').setValue(RankTextDocument);
     RankTextLayer.property('Source Text').expression =
-        'text.sourceText.createStyle().setFont("HarmonyOS_Sans_SC").setFillColor(hexToRgb("9049C6")).setFontSize(118).setLeading(243);';
-    RankTextLayer.property('Source Text').expression.enabled = false;
+        'text.sourceText.createStyle().setFont("HarmonyOS_Sans_SC")' +
+        '.setFillColor(hexToRgb("9049C6")).setFontSize(118).setLeading(243);';
+    RankTextLayer.property('Source Text').expression.enabled = true;
     RankTextLayer.property('Position').setValue([-438, 681.8]);
 
     t_fps = 67;
@@ -493,7 +498,7 @@ for (rank = 3; rank > 0; rank -= 1) {
     AddProgressBar(PreComp, CompSize[0], [960, 1076], SingleLength, 0, 0);
     MaskDuratrion = 10;
 
-    MP4layer = AddLayer(PreComp, '弥散渐变 紫', MaskDuratrion, 2);
+    MP4layer = AddLayer(PreComp, 'effect', MaskDuratrion, 2);
     MP4layer.property('Position').setValue([1000, 148]);
     MP4layer.property('Scale').setValue([188, 188]);
 
@@ -576,7 +581,8 @@ for (rank = 3; rank > 0; rank -= 1) {
     }
     BottomVector2.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
     BottomVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
-    BottomVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform').property('ADBE Vector Repeater Position').setValue([-328, 0]);
+    BottomVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
+        .property('ADBE Vector Repeater Position').setValue([-328, 0]);
     BottomVector2.property('ADBE Vector Graphic - G-Fill').property('ADBE Vector Grad Start Pt').setValue([-306, 67]);
     BottomVector2.property('ADBE Vector Graphic - G-Fill').property('ADBE Vector Grad End Pt').setValue([70, 5]);
     BottomVector2.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(0);
@@ -584,7 +590,7 @@ for (rank = 3; rank > 0; rank -= 1) {
     BottomGroup2.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([283, 502.5]);
     MP4layer.trackMatteType = TrackMatteType.ALPHA;
 
-    MP4layer2 = AddLayer(PreComp, '弥散渐变 紫', MaskDuratrion, 2);
+    MP4layer2 = AddLayer(PreComp, 'effect', MaskDuratrion, 2);
     MP4layer2.property('Position').setValue([1072, -628]);
     MP4layer2.property('Scale').setValue([188, 188]);
 
@@ -637,6 +643,10 @@ for (rank = 3; rank > 0; rank -= 1) {
     BlurLayer.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0004').setValue(-30);
     BlurLayer.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0005').setValue(9);
     BlurLayer.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0006').setValue(-7);
+    BlurLayer.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0007').setValue(1);
+    BlurLayer.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0008').setValue(-80);
+    BlurLayer.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0009').setValue(13);
+    BlurLayer.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0010').setValue(21);
     BlurLayer.property('Effects').addProperty('ADBE Fractal Noise');
     BlurLayer.property('Effects').property('ADBE Fractal Noise').property('ADBE Fractal Noise-0010').setValue(1);
     BlurLayer.property('Effects').property('ADBE Fractal Noise').property('ADBE Fractal Noise-0029').setValue(30);
@@ -683,9 +693,11 @@ for (rank = 3; rank > 0; rank -= 1) {
             .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 45]);
     }
     DataVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(19);
-    DataVector.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color').setValue([230 / 255, 230 / 255, 230 / 255, 1]);
+    DataVector.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color')
+        .setValue([230 / 255, 230 / 255, 230 / 255, 1]);
     DataVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
-    DataVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform').property('ADBE Vector Repeater Position').setValue([315, 0]);
+    DataVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
+        .property('ADBE Vector Repeater Position').setValue([315, 0]);
     DataVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
     DataLayer.property('Position').setValue([802, 151]);
     // VectorGroup.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([0, -65]);
@@ -725,9 +737,11 @@ for (rank = 3; rank > 0; rank -= 1) {
             .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 45]);
     }
     DataVector2.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(19);
-    DataVector2.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color').setValue([230 / 255, 230 / 255, 230 / 255, 1]);
+    DataVector2.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color')
+        .setValue([230 / 255, 230 / 255, 230 / 255, 1]);
     DataVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
-    DataVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform').property('ADBE Vector Repeater Position').setValue([315, 0]);
+    DataVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
+        .property('ADBE Vector Repeater Position').setValue([315, 0]);
     DataVector2.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
     DataGroup2.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([0, 70]);
 
@@ -768,7 +782,8 @@ for (rank = 3; rank > 0; rank -= 1) {
     }
     DataCircleVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(19);
     DataCircleVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
-    DataCircleVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform').property('ADBE Vector Repeater Position').setValue([315, 0]);
+    DataCircleVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
+        .property('ADBE Vector Repeater Position').setValue([315, 0]);
     DataCircleVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
     DataCircleLayer.property('Position').setValue([802, 151]);
     // VectorGroup.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([0, -65]);
@@ -808,13 +823,17 @@ for (rank = 3; rank > 0; rank -= 1) {
     }
     DataCircleVector2.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(19);
     DataCircleVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
-    DataCircleVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform').property('ADBE Vector Repeater Position').setValue([315, 0]);
+    DataCircleVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
+        .property('ADBE Vector Repeater Position').setValue([315, 0]);
     DataCircleVector2.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
     DataCircleGroup2.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([0, 70]);
     BlurLayer.trackMatteType = TrackMatteType.ALPHA;
 
     BlurLayer2 = PreComp.layers.addSolid([1, 1, 1], 'BlurLayer', 1920, 1080, 1, 10);
     BlurLayer2.property('Effects').addProperty('ADBE HUE SATURATION');
+    BlurLayer2.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0004').setValue(-30);
+    BlurLayer2.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0005').setValue(9);
+    BlurLayer2.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0006').setValue(-7);
     BlurLayer2.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0007').setValue(1);
     BlurLayer2.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0008').setValue(-80);
     BlurLayer2.property('Effects').property('ADBE HUE SATURATION').property('ADBE HUE SATURATION-0009').setValue(13);
@@ -924,8 +943,9 @@ for (rank = 3; rank > 0; rank -= 1) {
     LastRankDocument.applyStroke = false;
     LastRankLayer.property('Source Text').setValue(LastRankDocument);
     LastRankLayer.property('Source Text').expression =
-        'text.sourceText.createStyle().setFont("HarmonyOS_Sans_SC").setFillColor(hexToRgb("FFFFFF")).setFontSize(35).setLeading(99);';
-    LastRankLayer.property('Source Text').expression.enabled = false;
+        'text.sourceText.createStyle().setFont("HarmonyOS_Sans_SC")' +
+        '.setFillColor(hexToRgb("FFFFFF")).setFontSize(35).setLeading(99);';
+    LastRankLayer.property('Source Text').expression.enabled = true;
     LastRankLayer.property('Position').setValue([760.5 - 70, 165.5]);
 
     TotalScoreLayer = PreComp.layers.addText('总分');
@@ -937,8 +957,9 @@ for (rank = 3; rank > 0; rank -= 1) {
     TotalScoreDocument.applyStroke = false;
     TotalScoreLayer.property('Source Text').setValue(TotalScoreDocument);
     TotalScoreLayer.property('Source Text').expression =
-        'text.sourceText.createStyle().setFont("HarmonyOS_Sans_SC").setFillColor(hexToRgb("FFFFFF")).setFontSize(56).setLeading(99);';
-    TotalScoreLayer.property('Source Text').expression.enabled = false;
+        'text.sourceText.createStyle().setFont("HarmonyOS_Sans_SC")' +
+        '.setFillColor(hexToRgb("FFFFFF")).setFontSize(56).setLeading(99);';
+    TotalScoreLayer.property('Source Text').expression.enabled = true;
     TotalScoreLayer.property('Position').setValue([470 - 56, 188]);
 
     BottomLayer.startTime = 2;
@@ -967,13 +988,13 @@ for (rank = 3; rank > 0; rank -= 1) {
     DMLayer.property('Scale').setValue([23.6667, 23.6667]);
     DMLayer.property('Position').setValue([1010.5, 222.5]);
     DZLayer.property('Scale').setValue([17.6667, 17.6667]);
-    DZLayer.property('Position').setValue([1318, 151]);
+    DZLayer.property('Position').setValue([1321, 151]);
     PLLayer.property('Scale').setValue([21.6667, 21.6667]);
     PLLayer.property('Position').setValue([1321.5, 222.5]);
     SCLayer.property('Scale').setValue([15.3333, 15.3333]);
     SCLayer.property('Position').setValue([1636, 221]);
     TBLayer.property('Scale').setValue([14, 14]);
-    TBLayer.property('Position').setValue([1634.5, 150.5]);
+    TBLayer.property('Position').setValue([1635.5, 150.5]);
 
     BFLayer.property('Opacity').setValueAtTime(2 + 0.5, 0);
     BFLayer.property('Opacity').setValueAtTime(2 + 1, 100);
@@ -1017,7 +1038,8 @@ for (rank = 3; rank > 0; rank -= 1) {
 
     PreRankLayer = AddLayer(Part3, 'Pre' + rank + '_V', SingleLength, Globaloffset);
     Shadow = PreRankLayer.property('Effects').addProperty('ADBE Drop Shadow');
-    Shadow.property('ADBE Drop Shadow-0002').setValue(100);
+    Shadow.property('ADBE Drop Shadow-0001').setValue([0, 0, 0]);
+    Shadow.property('ADBE Drop Shadow-0002').setValue(255);
     Shadow.property('ADBE Drop Shadow-0004').setValue(0);
     Shadow.property('ADBE Drop Shadow-0005').setValue(50);
     Wipe = PreRankLayer.property('Effects').addProperty('ADBE Linear Wipe');
@@ -1061,7 +1083,8 @@ for (rank = 3; rank > 0; rank -= 1) {
     P4 = [t_fps, 0];
     for (x = 0; x <= t_fps; x += 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        PreRankLayer.property('Scale').setValueAtTime(Globaloffset + SingleLength - 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+        PreRankLayer.property('Scale')
+            .setValueAtTime(Globaloffset + SingleLength - 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
     }
     t_fps = CompFPS / 2;
     dest_y1 = 540;
@@ -1075,7 +1098,8 @@ for (rank = 3; rank > 0; rank -= 1) {
     P4 = [t_fps, dest];
     for (x = 0; x <= t_fps; x += 1) {
         y = BezierCurve(P1, P2, P3, P4, x);
-        PreRankLayer.property('Position').setValueAtTime(Globaloffset + SingleLength - 0.5 + (x - 1) / 60, [960, dest_y1 + y]);
+        PreRankLayer.property('Position')
+            .setValueAtTime(Globaloffset + SingleLength - 0.5 + (x - 1) / 60, [960, dest_y1 + y]);
     }
 
     Globaloffset += SingleLength;
