@@ -252,7 +252,7 @@ Globaloffset = 0;
 SingleLength = 25;
 Part1.duration = TrueDuration[2] * SingleLength + TrueDuration[2] - 1;
 BlackLayer = Part1.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
-for (rank = 20; rank > 10; rank -= 1) {
+for (rank = 30; rank > 10; rank -= 1) {
     if (!(rank + '_V' in ResourceID)) {
         continue;
     }
@@ -375,6 +375,9 @@ SingleLength = 45;
 Part3.duration = TrueDuration[0] * SingleLength + TrueDuration[0] * 5;
 BlackLayer = Part3.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
 for (rank = 3; rank > 0; rank -= 1) {
+    if (!(rank + '_V' in ResourceID)) {
+        continue;
+    }
     NextLayer = AddLayer(Part3, 'next_3', 5, Globaloffset);
     NextLayer.timeRemapEnabled = true;
     NextLayer.property('ADBE Time Remapping').setValueAtTime(4 + 59 / 60, 4 + 59 / 60);
