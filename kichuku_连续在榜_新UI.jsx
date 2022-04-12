@@ -2,8 +2,7 @@
 
 app.project.close(CloseOptions.PROMPT_TO_SAVE_CHANGES);
 app.newProject();
-Part1 = app.project.items.addComp('榜外推荐', 1920, 1080, 1, 1, 60);
-Part2 = app.project.items.addComp('经典推荐', 1920, 1080, 1, 30, 60);
+Part1 = app.project.items.addComp('连续在榜', 1920, 1080, 1, 1, 60);
 
 VideoSize = [1345, 758];
 CompSize = [1920, 1080];
