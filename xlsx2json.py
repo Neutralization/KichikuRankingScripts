@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from json import dumps
 from os import listdir
-from os.path import abspath
+from os.path import abspath, isfile
 
 import arrow
 from openpyxl import load_workbook
@@ -74,18 +74,20 @@ def xlsx2json(filename, ranktype):
             for x in xlsx_data[:21]
             if isinstance(x["排名"], int)  # and x["排名"] <= 21
         }
+        num_3 = len([x["排名"] for x in xlsx_data[:20] if x["排名"] <= 3])
+        num_10 = len([x["排名"] for x in xlsx_data[:20] if x["排名"] <= 10])
         json_data = [
             {
-                "rank": n + 1,
+                "rank": x["排名"],
                 "video": f"./主榜视频/av{x['aid']}.mp4",
                 "text": f"./主榜3-1/Rank_{n+1}.png"
-                if n + 1 <= 3
-                else f"./主榜10-4/Rank_{n+1-3}.png"
-                if 3 < n + 1 <= 10
-                else f"./主榜20-11/Rank_{n+1-10}.png",
+                if x["排名"] <= 3
+                else f"./主榜10-4/Rank_{n+1-num_3}.png"
+                if 3 < x["排名"] <= 10
+                else f"./主榜20-11/Rank_{n+1-num_10}.png",
                 "delta": "+"
                 + format(int(point_data[x["排名"]]) - int(point_data[x["排名"] + 1]), ",")
-                if n + 1 <= 3
+                if x["排名"] <= 3
                 else "",
                 "offset": 0,
             }
@@ -100,7 +102,7 @@ def xlsx2json(filename, ranktype):
             {
                 "rank": n + 1,
                 "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
-                "text": f"./旧稿推荐/{n + 1}.png",
+                "text": f"./旧稿推荐/{len(xlsx_data)-n}.png",
                 "offset": 0,
             }
             for n, x in enumerate(xlsx_data)
@@ -143,7 +145,7 @@ print(f"\n\t现在是 {NOW.format('YYYY-MM-DD HH:MM:SS')}，本周应该是周�
 print(f"\n\t将会查找文件名包含“{start_date}_to_{end_date}”的Excel文件")
 print(f"\n\t将会查找文件名包含“旧稿回顾”“{weeks_cn}”的Excel文件")
 print(f"\n\t将会查找文件名包含“经典回顾”“{weeks_cn}”的Excel文件")
-print(f"\n\t将会查找文件名包含“连续在榜”“{weeks_cn}”的Excel文件")
+print(f"\n\t将会查找文件名包含“连续在榜”“{weeks}”的Excel文件")
 
 null = input("\n\t回车继续执行...")
 
@@ -153,7 +155,7 @@ with open("./psdownload/download.txt", "w", encoding="utf-8") as f:
 main_excel = [
     f
     for f in listdir(".")
-    if ("~$" not in f and (f"{start_date}_to_{end_date}" in f or f"{weeks}期" in f))
+    if (isfile(f) and "~$" not in f and f"{start_date}_to_{end_date}" in f)
 ]
 if len(main_excel) > 0:
     print(f"\n\t找到Excel文件“{main_excel[0]}”")
@@ -162,7 +164,9 @@ if len(main_excel) > 0:
 else:
     print("\n\t未找到主榜Excel文件")
 old_excel = [
-    f for f in listdir(".") if ("~$" not in f and "旧稿回顾" in f and weeks_cn in f)
+    f
+    for f in listdir(".")
+    if (isfile(f) and "~$" not in f and "旧稿回顾" in f and weeks_cn in f)
 ]
 if len(old_excel) > 0:
     print(f"\n\t找到Excel文件“{old_excel[0]}”")
@@ -171,7 +175,9 @@ if len(old_excel) > 0:
 else:
     print("\n\t未找到旧稿回顾Excel文件")
 trad_excel = [
-    f for f in listdir(".") if ("~$" not in f and "经典回顾" in f and weeks_cn in f)
+    f
+    for f in listdir(".")
+    if (isfile(f) and "~$" not in f and "经典回顾" in f and weeks_cn in f)
 ]
 if len(trad_excel) > 0:
     print(f"\n\t找到Excel文件“{trad_excel[0]}”")
@@ -180,7 +186,9 @@ if len(trad_excel) > 0:
 else:
     print("\n\t未找到经典回顾Excel文件")
 long_excel = [
-    f for f in listdir(".") if ("~$" not in f and "连续在榜" in f and weeks_cn in f)
+    f
+    for f in listdir(".")
+    if (isfile(f) and "~$" not in f and "连续在榜" in f and f"{weeks}期" in f)
 ]
 if len(long_excel) > 0:
     print(f"\n\t找到Excel文件“{long_excel[0]}”")
