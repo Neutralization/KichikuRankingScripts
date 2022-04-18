@@ -42,17 +42,6 @@ for (key = 0; key < AllData.length; key++) {
     PointData[rank] = AllData[key]['delta'];
 }
 
-TrueDuration = [0, 0, 0];
-for (key = 0; key < AllData.length; key++) {
-    if (AllData[key]['rank'] <= 3) {
-        TrueDuration[0] += 1;
-    } else if (3 < AllData[key]['rank'] && AllData[key]['rank'] <= 10) {
-        TrueDuration[1] += 1;
-    } else if (10 < AllData[key]['rank'] && AllData[key]['rank'] <= 20) {
-        TrueDuration[2] += 1;
-    }
-}
-
 for (key in StaticResource) {
     if (typeof StaticResource[key] != 'undefined') {
         ResourceFile = new ImportOptions(File(StaticResource[key]));
@@ -250,12 +239,13 @@ ReCountResource();
 // Part 1
 Globaloffset = 0;
 SingleLength = 25;
-Part1.duration = TrueDuration[2] * SingleLength + TrueDuration[2] - 1;
+TrueDuration = 0;
 BlackLayer = Part1.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
 for (rank = 30; rank > 10; rank -= 1) {
     if (!(rank + '_V' in ResourceID)) {
         continue;
     }
+    app.project.items[ResourceID[rank + '_V']].mainSource.loop = 2;
     RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
@@ -298,24 +288,28 @@ for (rank = 30; rank > 10; rank -= 1) {
 
     if (rank == 11) {
         addNext = 0;
+        TrueDuration += SingleLength;
     } else {
         addNext = 1;
         NextLayer = AddLayer(Part1, 'next', 1, Globaloffset + SingleLength);
+        TrueDuration += SingleLength + 1;
     }
     Globaloffset += SingleLength + addNext;
 }
+Part1.duration = TrueDuration;
 BlackLayer.outPoint = Part1.duration;
 Part1.openInViewer();
 
 // Part 2
 Globaloffset = 0;
 SingleLength = 25;
-Part2.duration = TrueDuration[1] * SingleLength + TrueDuration[1] - 1;
+TrueDuration = 0;
 BlackLayer = Part2.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
 for (rank = 10; rank > 3; rank -= 1) {
     if (!(rank + '_V' in ResourceID)) {
         continue;
     }
+    app.project.items[ResourceID[rank + '_V']].mainSource.loop = 2;
     RankVideoLayer = AddLayer(Part2, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
@@ -357,12 +351,15 @@ for (rank = 10; rank > 3; rank -= 1) {
 
     if (rank == 4) {
         addNext = 0;
+        TrueDuration += SingleLength;
     } else {
         addNext = 1;
         NextLayer = AddLayer(Part2, 'next', 1, Globaloffset + SingleLength);
+        TrueDuration += SingleLength + 1;
     }
     Globaloffset += SingleLength + addNext;
 }
+Part2.duration = TrueDuration;
 BlackLayer.outPoint = Part2.duration;
 Part2.openInViewer();
 
@@ -372,12 +369,13 @@ Part2.openInViewer();
 RankCN = ['主榜 第一名', '主榜 第二名', '主榜 第三名'];
 Globaloffset = 0;
 SingleLength = 45;
-Part3.duration = TrueDuration[0] * SingleLength + TrueDuration[0] * 5;
+TrueDuration = 0;
 BlackLayer = Part3.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
 for (rank = 3; rank > 0; rank -= 1) {
     if (!(rank + '_V' in ResourceID)) {
         continue;
     }
+    app.project.items[ResourceID[rank + '_V']].mainSource.loop = 2;
     NextLayer = AddLayer(Part3, 'next_3', 5, Globaloffset);
     NextLayer.timeRemapEnabled = true;
     NextLayer.property('ADBE Time Remapping').setValueAtTime(4 + 59 / 60, 4 + 59 / 60);
@@ -701,9 +699,8 @@ for (rank = 3; rank > 0; rank -= 1) {
     DataVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
     DataVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
         .property('ADBE Vector Repeater Position').setValue([315, 0]);
-    DataVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
+    DataVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1);
     DataLayer.property('Position').setValue([802, 151]);
-    // VectorGroup.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([0, -65]);
 
     DataGroup2 = DataLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group');
     DataVector2 = DataGroup2.addProperty('ADBE Vectors Group');
@@ -745,7 +742,7 @@ for (rank = 3; rank > 0; rank -= 1) {
     DataVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
     DataVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
         .property('ADBE Vector Repeater Position').setValue([315, 0]);
-    DataVector2.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
+    DataVector2.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1);
     DataGroup2.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([0, 70]);
 
     DataCircleLayer = PreComp.layers.addShape();
@@ -787,9 +784,8 @@ for (rank = 3; rank > 0; rank -= 1) {
     DataCircleVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
     DataCircleVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
         .property('ADBE Vector Repeater Position').setValue([315, 0]);
-    DataCircleVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
+    DataCircleVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1);
     DataCircleLayer.property('Position').setValue([802, 151]);
-    // VectorGroup.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([0, -65]);
 
     DataCircleGroup2 = DataCircleLayer.property('ADBE Root Vectors Group').addProperty('ADBE Vector Group');
     DataCircleVector2 = DataCircleGroup2.addProperty('ADBE Vectors Group');
@@ -828,7 +824,7 @@ for (rank = 3; rank > 0; rank -= 1) {
     DataCircleVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
     DataCircleVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Transform')
         .property('ADBE Vector Repeater Position').setValue([315, 0]);
-    DataCircleVector2.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
+    DataCircleVector2.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1);
     DataCircleGroup2.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([0, 70]);
     BlurLayer.trackMatteType = TrackMatteType.ALPHA;
 
@@ -888,7 +884,6 @@ for (rank = 3; rank > 0; rank -= 1) {
     ScoreVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
     ScoreVector.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color').setValue([1, 1, 1, 1]);
     ScoreVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(0);
-    // ScoreGroup.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([645, 542.5]);
     ScoreLayer.property('Position').setValue([-178 + 645, -353 + 542.5]);
 
     ScoreCircleLayer = PreComp.layers.addShape();
@@ -926,8 +921,7 @@ for (rank = 3; rank > 0; rank -= 1) {
             .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 117]);
     }
     ScoreCircleVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
-    ScoreCircleVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1); // time
-    // ScoreGroup.property('ADBE Vector Transform Group').property('ADBE Vector Position').setValue([645, 542.5]);
+    ScoreCircleVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1);
     ScoreCircleLayer.property('Position').setValue([-178 + 645, -353 + 542.5]);
     BlurLayer2.trackMatteType = TrackMatteType.ALPHA;
 
@@ -1104,8 +1098,9 @@ for (rank = 3; rank > 0; rank -= 1) {
         PreRankLayer.property('Position')
             .setValueAtTime(Globaloffset + SingleLength - 0.5 + (x - 1) / 60, [960, dest_y1 + y]);
     }
-
+    TrueDuration += SingleLength + 5;
     Globaloffset += SingleLength;
 }
+Part3.duration = TrueDuration;
 BlackLayer.outPoint = Part3.duration;
 Part3.openInViewer();
