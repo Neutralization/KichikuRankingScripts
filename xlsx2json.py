@@ -102,7 +102,7 @@ def xlsx2json(filename, ranktype):
             {
                 "rank": n + 1,
                 "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
-                "text": f"./旧稿推荐/{len(xlsx_data)-n}.png",
+                "text": f"./旧稿推荐/{n + 1}.png",
                 "offset": 0,
             }
             for n, x in enumerate(xlsx_data)
