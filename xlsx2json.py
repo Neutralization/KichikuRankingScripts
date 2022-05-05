@@ -80,11 +80,11 @@ def xlsx2json(filename, ranktype):
             {
                 "rank": x["排名"],
                 "video": f"./主榜视频/av{x['aid']}.mp4",
-                "text": f"./主榜3-1/Rank_{n+1}.png"
-                if x["排名"] <= 3
-                else f"./主榜10-4/Rank_{n+1-num_3}.png"
-                if 3 < x["排名"] <= 10
-                else f"./主榜20-11/Rank_{n+1-num_10}.png",
+                "text": f"./主榜{xlsx_data[2]['排名']}-1/Rank_{n+1}.png"
+                if n + 1 <= 3
+                else f"./主榜{xlsx_data[9]['排名']}-{xlsx_data[3]['排名']}/Rank_{n+1-3}.png"
+                if 3 < n + 1 <= 10
+                else f"./主榜{xlsx_data[19]['排名']}-{xlsx_data[10]['排名']}/Rank_{n+1-10}.png",
                 "delta": "+"
                 + format(int(point_data[x["排名"]]) - int(point_data[x["排名"] + 1]), ",")
                 if x["排名"] <= 3
@@ -130,7 +130,7 @@ def xlsx2json(filename, ranktype):
             {
                 "rank": n + 1,
                 "video": f"./主榜视频/av{x['aid']}.mp4",
-                "text": f"./连续在榜/Rank_{n + 1}.png",
+                "text": f"./{weeks:03d}期连续在榜/Rank_{n + 1}.png",
                 "offset": 0,
             }
             for n, x in enumerate(xlsx_data)
