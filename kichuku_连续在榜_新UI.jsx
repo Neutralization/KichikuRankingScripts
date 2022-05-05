@@ -235,7 +235,7 @@ BlackLayer.outPoint = Part1.duration;
 ChangeLayer = AddLayer(Part1, 'change', 5, 0);
 Globaloffset += 5;
 
-for (rank = 1; rank <= LastRank; rank += 1) {
+for (rank = LastRank; rank >= 1; rank -= 1) {
     RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
