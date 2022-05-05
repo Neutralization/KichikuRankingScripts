@@ -74,11 +74,12 @@ def xlsx2json(filename, ranktype):
             for x in xlsx_data[:21]
             if isinstance(x["排名"], int)  # and x["排名"] <= 21
         }
-        num_3 = len([x["排名"] for x in xlsx_data[:20] if x["排名"] <= 3])
-        num_10 = len([x["排名"] for x in xlsx_data[:20] if x["排名"] <= 10])
+        # num_3 = len([x["排名"] for x in xlsx_data[:20] if x["排名"] <= 3])
+        # num_10 = len([x["排名"] for x in xlsx_data[:20] if x["排名"] <= 10])
         json_data = [
             {
-                "rank": x["排名"],
+                "rank": n + 1,
+                "true_rank": f"第{an2cn(x['排名'])}名" if n + 1 <= 3 else x["排名"],
                 "video": f"./主榜视频/av{x['aid']}.mp4",
                 "text": f"./主榜{xlsx_data[2]['排名']}-1/Rank_{n+1}.png"
                 if n + 1 <= 3
@@ -87,7 +88,9 @@ def xlsx2json(filename, ranktype):
                 else f"./主榜{xlsx_data[19]['排名']}-{xlsx_data[10]['排名']}/Rank_{n+1-10}.png",
                 "delta": "+"
                 + format(int(point_data[x["排名"]]) - int(point_data[x["排名"] + 1]), ",")
-                if x["排名"] <= 3
+                if point_data.get(x["排名"] + 1) and n + 1 <= 3
+                else "+000,000,000记得改数字！！"
+                if not point_data.get(x["排名"] + 1) and n + 1 <= 3
                 else "",
                 "offset": 0,
             }
