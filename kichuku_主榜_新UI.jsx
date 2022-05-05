@@ -14,6 +14,8 @@ StaticFolder = app.project.items.addFolder('StaticResource');
 StaticResource = {
     mask_20: './绿幕抠图/!主榜 20-11绿幕.mp4',
     mask_10: './绿幕抠图/!主榜 10-4绿幕.mp4',
+    next_20: './绿幕抠图/!NEXT 主榜 20-11.mp4',
+    next_10: './绿幕抠图/!NEXT 主榜 10-4.mp4',
     next_3: './绿幕抠图/!NEXT 主榜.mp4',
     next: './绿幕抠图/!NEXT.mp4',
     bf: './绿幕抠图/播放量.png',
@@ -34,12 +36,14 @@ AllData = JSON.parse(content);
 
 OffsetData = {};
 PointData = {};
+TrueRankData = {};
 for (key = 0; key < AllData.length; key++) {
     rank = AllData[key]['rank'];
     StaticResource[rank + '_V'] = AllData[key]['video'];
     StaticResource[rank + '_T'] = AllData[key]['text'];
     OffsetData[rank] = AllData[key]['offset'];
     PointData[rank] = AllData[key]['delta'];
+    TrueRankData[rank] = AllData[key]['true_rank'];
 }
 
 for (key in StaticResource) {
@@ -241,6 +245,61 @@ Globaloffset = 0;
 SingleLength = 25;
 TrueDuration = 0;
 BlackLayer = Part1.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
+
+NextLayer = AddLayer(Part1, 'next_20', 5, Globaloffset);
+// NextLayer.timeRemapEnabled = true;
+// NextLayer.property('ADBE Time Remapping').setValueAtTime(4 + 59 / 60, 4 + 59 / 60);
+// NextLayer.property('ADBE Time Remapping').setValueAtTime(9 + 59 / 60, 4 + 59 / 60);
+// NextLayer.outPoint = Globaloffset + 5 + SingleLength;
+RankTextLayer = Part1.layers.addText('主榜 ' + TrueRankData[20] + ' - ' + TrueRankData[11] + ' 名');
+RankTextLayer.startTime = Globaloffset;
+RankTextLayer.outPoint = Globaloffset + 5;
+RankTextLayer.trackMatteType = TrackMatteType.ALPHA;
+RankTextDocument = RankTextLayer.property('Source Text').value;
+RankTextDocument.resetCharStyle();
+RankTextDocument.resetParagraphStyle();
+RankTextDocument.justification = ParagraphJustification.LEFT_JUSTIFY;
+RankTextDocument.applyFill = true;
+RankTextDocument.applyStroke = false;
+RankTextLayer.property('Source Text').setValue(RankTextDocument);
+RankTextLayer.property('Source Text').expression =
+    'text.sourceText.createStyle().setFont("HarmonyOS_Sans_SC")' +
+    '.setFillColor(hexToRgb("006AF5")).setFontSize(118).setLeading(243);';
+RankTextLayer.property('Source Text').expression.enabled = true;
+RankTextLayer.property('Position').setValue([-438, 681.8]);
+
+t_fps = 67;
+dest_y1 = -438.7;
+dest_y2 = 366.3;
+dest = dest_y2 - dest_y1;
+c1 = 59 / 67;
+c2 = 0;
+P1 = [0, 0];
+P2 = [c1 * t_fps, 0];
+P3 = [c2 * t_fps, dest];
+P4 = [t_fps, dest];
+for (x = 0; x <= t_fps; x += 1) {
+    y = BezierCurve(P1, P2, P3, P4, x);
+    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 18) / 60, [dest_y1 + y, 681.8]);
+}
+c1 = 1;
+c2 = 7 / 67;
+P1 = [0, dest];
+P2 = [c1 * t_fps, dest];
+P3 = [c2 * t_fps, 0];
+P4 = [t_fps, 0];
+for (x = 0; x <= t_fps; x += 1) {
+    y = BezierCurve(P1, P2, P3, P4, x);
+    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 214) / 60, [dest_y1 + y, 681.8]);
+}
+RankMaskLayer = Part1.layers.addSolid([0, 0, 0], 'Rank', 893, 128, 1, 5);
+RankMaskLayer.startTime = Globaloffset;
+RankMaskLayer.property('Position').setValue([960 - 152.5, 540 + 93]);
+RankMaskLayer.enabled = false;
+
+Globaloffset += 5;
+TrueDuration += 5;
+
 for (rank = 30; rank > 10; rank -= 1) {
     if (!(rank + '_V' in ResourceID)) {
         continue;
@@ -305,6 +364,61 @@ Globaloffset = 0;
 SingleLength = 25;
 TrueDuration = 0;
 BlackLayer = Part2.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
+
+NextLayer = AddLayer(Part2, 'next_10', 5, Globaloffset);
+// NextLayer.timeRemapEnabled = true;
+// NextLayer.property('ADBE Time Remapping').setValueAtTime(4 + 59 / 60, 4 + 59 / 60);
+// NextLayer.property('ADBE Time Remapping').setValueAtTime(9 + 59 / 60, 4 + 59 / 60);
+// NextLayer.outPoint = Globaloffset + 5 + SingleLength;
+RankTextLayer = Part2.layers.addText('主榜 ' + TrueRankData[10] + ' - ' + TrueRankData[4] + ' 名');
+RankTextLayer.startTime = Globaloffset;
+RankTextLayer.outPoint = Globaloffset + 5;
+RankTextLayer.trackMatteType = TrackMatteType.ALPHA;
+RankTextDocument = RankTextLayer.property('Source Text').value;
+RankTextDocument.resetCharStyle();
+RankTextDocument.resetParagraphStyle();
+RankTextDocument.justification = ParagraphJustification.LEFT_JUSTIFY;
+RankTextDocument.applyFill = true;
+RankTextDocument.applyStroke = false;
+RankTextLayer.property('Source Text').setValue(RankTextDocument);
+RankTextLayer.property('Source Text').expression =
+    'text.sourceText.createStyle().setFont("HarmonyOS_Sans_SC")' +
+    '.setFillColor(hexToRgb("F38B2E")).setFontSize(118).setLeading(243);';
+RankTextLayer.property('Source Text').expression.enabled = true;
+RankTextLayer.property('Position').setValue([-438, 681.8]);
+
+t_fps = 67;
+dest_y1 = -438.7;
+dest_y2 = 366.3;
+dest = dest_y2 - dest_y1;
+c1 = 59 / 67;
+c2 = 0;
+P1 = [0, 0];
+P2 = [c1 * t_fps, 0];
+P3 = [c2 * t_fps, dest];
+P4 = [t_fps, dest];
+for (x = 0; x <= t_fps; x += 1) {
+    y = BezierCurve(P1, P2, P3, P4, x);
+    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 18) / 60, [dest_y1 + y, 681.8]);
+}
+c1 = 1;
+c2 = 7 / 67;
+P1 = [0, dest];
+P2 = [c1 * t_fps, dest];
+P3 = [c2 * t_fps, 0];
+P4 = [t_fps, 0];
+for (x = 0; x <= t_fps; x += 1) {
+    y = BezierCurve(P1, P2, P3, P4, x);
+    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 214) / 60, [dest_y1 + y, 681.8]);
+}
+RankMaskLayer = Part2.layers.addSolid([0, 0, 0], 'Rank', 893, 128, 1, 5);
+RankMaskLayer.startTime = Globaloffset;
+RankMaskLayer.property('Position').setValue([960 - 152.5, 540 + 93]);
+RankMaskLayer.enabled = false;
+
+Globaloffset += 5;
+TrueDuration += 5;
+
 for (rank = 10; rank > 3; rank -= 1) {
     if (!(rank + '_V' in ResourceID)) {
         continue;
@@ -366,7 +480,7 @@ Part2.openInViewer();
 // Part 3
 
 //app.project.items[ResourceID["next_3"]].mainSource.loop = 2;
-RankCN = ['主榜 第一名', '主榜 第二名', '主榜 第三名'];
+//RankCN = ['主榜 第一名', '主榜 第二名', '主榜 第三名'];
 Globaloffset = 0;
 SingleLength = 45;
 TrueDuration = 0;
@@ -427,7 +541,7 @@ for (rank = 3; rank > 0; rank -= 1) {
     PointMaskLayer.property('Position').setValue([960 - 321, 540 + 192.5]);
     PointMaskLayer.enabled = false;
 
-    RankTextLayer = Part3.layers.addText(RankCN[rank - 1]);
+    RankTextLayer = Part3.layers.addText(TrueRankData[rank]);
     RankTextLayer.startTime = Globaloffset;
     RankTextLayer.outPoint = Globaloffset + 5;
     RankTextLayer.trackMatteType = TrackMatteType.ALPHA;
