@@ -81,11 +81,12 @@ def xlsx2json(filename, ranktype):
                 "rank": n + 1,
                 "true_rank": f"第{an2cn(x['排名'])}名" if n + 1 <= 3 else x["排名"],
                 "video": f"./主榜视频/av{x['aid']}.mp4",
-                "text": f"./主榜{xlsx_data[2]['排名']}-1/Rank_{n+1}.png"
-                if n + 1 <= 3
-                else f"./主榜{xlsx_data[9]['排名']}-{xlsx_data[3]['排名']}/Rank_{n+1-3}.png"
-                if 3 < n + 1 <= 10
-                else f"./主榜{xlsx_data[19]['排名']}-{xlsx_data[10]['排名']}/Rank_{n+1-10}.png",
+                # "text": f"./主榜{xlsx_data[2]['排名']}-1/Rank_{n+1}.png"
+                "text": f"./主榜3-1/Rank_{n+1}.png" if n + 1 <= 3
+                # else f"./主榜{xlsx_data[9]['排名']}-{xlsx_data[3]['排名']}/Rank_{n+1-3}.png"
+                else f"./主榜10-4/Rank_{n+1-3}.png" if 3 < n + 1 <= 10
+                # else f"./主榜{xlsx_data[19]['排名']}-{xlsx_data[10]['排名']}/Rank_{n+1-10}.png",
+                else f"./主榜20-11/Rank_{n+1-10}.png",
                 "delta": "+"
                 + format(int(point_data[x["排名"]]) - int(point_data[x["排名"] + 1]), ",")
                 if point_data.get(x["排名"] + 1) and n + 1 <= 3
@@ -145,10 +146,10 @@ def xlsx2json(filename, ranktype):
 
 print(f"\n\t现在是 {NOW.format('YYYY-MM-DD HH:MM:SS')}，本周应该是周刊第{weeks_cn}期")
 
-print(f"\n\t将会查找文件名包含“{start_date}_to_{end_date}”的Excel文件")
+print(f"\n\t将会查找文件名包含“主榜”“{weeks}”的Excel文件")
+print(f"\n\t将会查找文件名包含“连续在榜”“{weeks}”的Excel文件")
 print(f"\n\t将会查找文件名包含“旧稿回顾”“{weeks_cn}”的Excel文件")
 print(f"\n\t将会查找文件名包含“经典回顾”“{weeks_cn}”的Excel文件")
-print(f"\n\t将会查找文件名包含“连续在榜”“{weeks}”的Excel文件")
 
 null = input("\n\t回车继续执行...")
 
@@ -158,7 +159,8 @@ with open("./psdownload/download.txt", "w", encoding="utf-8") as f:
 main_excel = [
     f
     for f in listdir(".")
-    if (isfile(f) and "~$" not in f and f"{start_date}_to_{end_date}" in f)
+    # if (isfile(f) and "~$" not in f and f"{start_date}_to_{end_date}" in f)
+    if (isfile(f) and "~$" not in f and "主榜" in f and f"{weeks}期" in f)
 ]
 if len(main_excel) > 0:
     print(f"\n\t找到Excel文件“{main_excel[0]}”")
@@ -166,6 +168,17 @@ if len(main_excel) > 0:
     print("\tAE脚本数据“data.json”已经生成")
 else:
     print("\n\t未找到主榜Excel文件")
+long_excel = [
+    f
+    for f in listdir(".")
+    if (isfile(f) and "~$" not in f and "连续在榜" in f and f"{weeks}期" in f)
+]
+if len(long_excel) > 0:
+    print(f"\n\t找到Excel文件“{long_excel[0]}”")
+    xlsx2json(long_excel[0], "连续")
+    print("\tAE脚本数据“data_连续.json”已经生成")
+else:
+    print("\n\t未找到连续在榜Excel文件")
 old_excel = [
     f
     for f in listdir(".")
@@ -188,17 +201,6 @@ if len(trad_excel) > 0:
     print("\tAE脚本数据“data_经典&冷门.json”已经生成")
 else:
     print("\n\t未找到经典回顾Excel文件")
-long_excel = [
-    f
-    for f in listdir(".")
-    if (isfile(f) and "~$" not in f and "连续在榜" in f and f"{weeks}期" in f)
-]
-if len(long_excel) > 0:
-    print(f"\n\t找到Excel文件“{long_excel[0]}”")
-    xlsx2json(long_excel[0], "连续")
-    print("\tAE脚本数据“data_连续.json”已经生成")
-else:
-    print("\n\t未找到连续在榜Excel文件")
 
 if len(main_excel) + len(old_excel) + len(trad_excel) + len(long_excel) > 0:
     print(f"\n\t视频下载列表已保存至“{abspath('./psdownload/download.txt')}”")
