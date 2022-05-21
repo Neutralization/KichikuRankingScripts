@@ -17,7 +17,7 @@ Next3 = app.project.items.addComp('Next3', 1920, 1080, 1, 5, CompFPS);
 Next2 = app.project.items.addComp('Next2', 1920, 1080, 1, 5, CompFPS);
 Next1 = app.project.items.addComp('Next1', 1920, 1080, 1, 5, CompFPS);
 Part5 = app.project.items.addComp('主榜3-1', 1920, 1080, 1, 5, CompFPS);
-Part6 = app.project.items.addComp('副榜', 1920, 1080, 1, 5 * 35, CompFPS);
+Part6 = app.project.items.addComp('副榜', 1920, 1080, 1, 5 * 36, CompFPS);
 Final = app.project.items.addComp('总合成', 1920, 1080, 1, 27, CompFPS);
 
 jsondata = new File('月刊数据.json');
@@ -35,7 +35,9 @@ for (key = 0; key < FootageData.length; key++) {
     Rank = FootageData[key]['rank'];
     FileName = 'Rank_' + Rank;
     FootageFile[RankList + FileName + '_Video'] = FootageData[key]['video'];
-    FootageFile[RankList + FileName + '_Image'] = FootageData[key]['image'];
+    if (FootageData[key]['image'] != '') {
+        FootageFile[RankList + FileName + '_Image'] = FootageData[key]['image'];
+    }
     OffsetData[RankList + Rank] = FootageData[key]['offset'];
     PointData[RankList + Rank] = FootageData[key]['point'];
 }
@@ -739,8 +741,15 @@ for (rank = 3; rank >= 1; rank -= 1) {
 Part5.duration = BlackLayer.outPoint = Globaloffset;
 
 // 副榜
-Globaloffset = 0;
+Globaloffset = 5;
+AddLayer(Part6, 'next_sub', 5, 0);
 app.project.items[ResourceID['mask_sub']].mainSource.loop = 35;
+Bgm = AddLayer(Part6, '副榜Rank_0_Video', 5 * 35, Globaloffset - OffsetData['副榜0']);
+Bgm.inPoint = Globaloffset;
+Bgm.outPoint = Globaloffset + 5 * 35;
+Bgm.property('Opacity').setValue(0);
+AddAudioProperty(Bgm, 2, 1, Bgm.inPoint, 1);
+AddAudioProperty(Bgm, 2, 2, Bgm.outPoint - 2, 2);
 AddLayer(Part6, 'mask_sub', 5 * 35, Globaloffset);
 for (n = 1; n <= 35; n += 1) {
     RankDataLayer = AddLayer(Part6, n, 5, Globaloffset);
