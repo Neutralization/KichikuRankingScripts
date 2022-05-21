@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+import time
 from json import dumps
-from os.path import abspath
+from os import rename
+from os.path import abspath, exists
+
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
@@ -112,6 +115,9 @@ def main():
     json_data += excel2json(NewExcel, "新人")
     print(f"\n\t视频下载列表已保存至“{abspath('./psdownload/download.txt')}”")
     data = dumps(json_data, indent=4, ensure_ascii=False)
+    if exists("月刊数据.json"):
+        now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        rename("月刊数据.json", f"月刊数据_备份_{now}.json")
     with open("月刊数据.json", "w", encoding="utf-8") as f:
         f.write(data)
     print("\n\tAE脚本数据“月刊数据.json”已经生成")
