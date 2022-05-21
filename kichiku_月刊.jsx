@@ -494,6 +494,15 @@ for (rank = 10; rank >= 4; rank -= 1) {
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 2, 100);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + VideoDuration - 2, 100);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + VideoDuration - 1, 0);
+    RankDataLayer.property('Effects').addProperty('ADBE HUE SATURATION');
+    RankDataEffect = RankDataLayer.property('Effects').property('ADBE HUE SATURATION');
+    RankDataEffect.property('ADBE HUE SATURATION-0004').setValue(289);
+    RankDataEffect.property('ADBE HUE SATURATION-0005').setValue(0);
+    RankDataEffect.property('ADBE HUE SATURATION-0006').setValue(0);
+    RankDataEffect.property('ADBE HUE SATURATION-0007').setValue(0);
+    RankDataEffect.property('ADBE HUE SATURATION-0008').setValue(0);
+    RankDataEffect.property('ADBE HUE SATURATION-0009').setValue(25);
+    RankDataEffect.property('ADBE HUE SATURATION-0010').setValue(0);
     if (rank == 4) {
         addNext = 0;
     } else {
@@ -571,7 +580,7 @@ for (rank = 10; rank >= 1; rank -= 1) {
 
 Part4.duration = BlackLayer.outPoint = Globaloffset;
 
-// Next3-1
+// Next 3-1
 NextList = [Next1, Next2, Next3];
 for (rank = 3; rank >= 1; rank -= 1) {
     Globaloffset = 0;
