@@ -63,7 +63,7 @@ def excel2json(filename, ranktype):
     elif ranktype == "榜外":
         json_data = [
             {
-                "rank": n + 1,
+                "rank": 10 - n,
                 "type": "榜外",
                 "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
                 "image": f"./鬼畜剧场月刊/{n + 1}.png",
