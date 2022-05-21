@@ -97,7 +97,16 @@ def main():
     NewExcel = input("\n\t拖拽新人自荐Excel到窗口，出现地址后回车\n\t")
     print(f"\t{NewExcel}")
 
-    json_data = []
+    json_data = [
+        {
+            "rank": 0,
+            "type": "副榜",
+            "video": "./主榜视频/av29843341.mp4",
+            "image": "",
+            "point": "",
+            "offset": 0,
+        },
+    ]
     json_data += excel2json(MainExcel, "主榜")
     json_data += excel2json(SubExcel, "榜外")
     json_data += excel2json(NewExcel, "新人")
