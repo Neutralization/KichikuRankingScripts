@@ -20,6 +20,13 @@ def readExcel(filename):
     df = df.reset_index(drop=True)
     df.insert(0, "排名", [i + 1 for i in range(len(df.index))])
     df.insert(0, "评语", ["" for i in range(len(df.index))])
+
+    for i in range(1000):
+        df.loc[i, "转化率"] = f"{int(df.at[i, '转化率']*100)}%"
+        df.loc[i, "总分"] = int(df.at[i, "总分"])
+        df.at[i, "pubdate"] = pd.to_datetime(
+            df.loc[i, "pubdate"], format="%Y-%m-%d %H:%M:%S"
+        ).strftime("%Y/%m/%d %H:%M")
     return df[0:1000]
 
 
@@ -79,7 +86,7 @@ def diffExcel(file1, file2):
     df1 = df1.sort_index().reset_index(drop=True)
     # print(df1[0:23])
 
-    df1[0:128].to_excel(f"{this_date}_to_{end_date}.xlsx", index=False)
+    df1[0:128].to_excel(f"{weeks:03d}期主榜.xlsx", index=False)
 
 
 def main():
