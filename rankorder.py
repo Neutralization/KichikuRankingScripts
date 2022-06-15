@@ -18,6 +18,11 @@ def readExcel(filename):
     df = pd.read_csv(filename)
     df.sort_values(by="总分", inplace=True, ascending=False)
     df = df.reset_index(drop=True)
+    ex_aids = [982245921, 512295324, 342360897]
+    for aid in ex_aids:
+        exclude = df.loc[df["aid"] == aid].index
+        df = df.drop(exclude)
+        df = df.sort_index().reset_index(drop=True)
     df.insert(0, "排名", [i + 1 for i in range(len(df.index))])
     df.insert(0, "评语", ["" for i in range(len(df.index))])
 
