@@ -756,19 +756,41 @@ app.project.items[ResourceID['mask_sub']].mainSource.loop = 35;
 Bgm = AddLayer(Part6, '副榜Rank_0_Video', 5 * 35, Globaloffset - OffsetData['副榜0']);
 Bgm.inPoint = Globaloffset;
 Bgm.outPoint = Globaloffset + 5 * 35;
-Bgm.property('Opacity').setValue(0);
+// Bgm.property('Opacity').setValue(0);
 AddAudioProperty(Bgm, 2, 1, Bgm.inPoint, 1);
 AddAudioProperty(Bgm, 2, 2, Bgm.outPoint - 2, 2);
 AddLayer(Part6, 'mask_sub', 5 * 35, Globaloffset);
 for (n = 1; n <= 35; n += 1) {
-    RankDataLayer = AddLayer(Part6, n, 5, Globaloffset);
-    NewProperty = RankDataLayer.property('Effects').addProperty('ADBE Linear Wipe');
-    NewProperty.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset, 100);
-    NewProperty.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset + 1, 0);
-    NewProperty.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset + 4, 0);
-    NewProperty.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset + 5, 100);
-    NewProperty.property('ADBE Linear Wipe-0002').setValue(0);
-    NewProperty.property('ADBE Linear Wipe-0003').setValue(200);
+    RankDataLayer1 = AddLayer(Part6, n, 5, Globaloffset);
+    RankDataLayer1.mask.addProperty('Mask');
+    RankDataLayer1.mask(1).maskMode = MaskMode.ADD;
+    RankDataLayer1.mask(1).property(1).expression =
+        'mask(1).maskPath = createPath(points=[[116,44], [1804,44], [1804,332], [116,332]], ' +
+        'inTangents=[], outTangents=[], is_closed=true)';
+    RankDataLayer1.property('Opacity').setValueAtTime(Globaloffset + 6 / CompFPS, 0);
+    RankDataLayer1.property('Opacity').setValueAtTime(Globaloffset + 21 / CompFPS, 100);
+    RankDataLayer1.property('Opacity').setValueAtTime(Globaloffset + 111 / CompFPS, 100);
+    RankDataLayer1.property('Opacity').setValueAtTime(Globaloffset + 120 / CompFPS, 0);
+    RankDataLayer2 = AddLayer(Part6, n, 5, Globaloffset);
+    RankDataLayer2.mask.addProperty('Mask');
+    RankDataLayer2.mask(1).maskMode = MaskMode.ADD;
+    RankDataLayer2.mask(1).property(1).expression =
+        'mask(1).maskPath = createPath(points=[[116,392], [1804,392], [1804,680], [116,680]], ' +
+        'inTangents=[], outTangents=[], is_closed=true)';
+    RankDataLayer2.property('Opacity').setValueAtTime(Globaloffset + 12 / CompFPS, 0);
+    RankDataLayer2.property('Opacity').setValueAtTime(Globaloffset + 27 / CompFPS, 100);
+    RankDataLayer2.property('Opacity').setValueAtTime(Globaloffset + 105 / CompFPS, 100);
+    RankDataLayer2.property('Opacity').setValueAtTime(Globaloffset + 115 / CompFPS, 0);
+    RankDataLayer3 = AddLayer(Part6, n, 5, Globaloffset);
+    RankDataLayer3.mask.addProperty('Mask');
+    RankDataLayer3.mask(1).maskMode = MaskMode.ADD;
+    RankDataLayer3.mask(1).property(1).expression =
+        'mask(1).maskPath = createPath(points=[[116,754], [1804,754], [1804,1042], [116,1042]], ' +
+        'inTangents=[], outTangents=[], is_closed=true)';
+    RankDataLayer3.property('Opacity').setValueAtTime(Globaloffset + 19 / CompFPS, 0);
+    RankDataLayer3.property('Opacity').setValueAtTime(Globaloffset + 34 / CompFPS, 100);
+    RankDataLayer3.property('Opacity').setValueAtTime(Globaloffset + 99 / CompFPS, 100);
+    RankDataLayer3.property('Opacity').setValueAtTime(Globaloffset + 109 / CompFPS, 0);
     Globaloffset += 5;
 }
 
