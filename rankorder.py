@@ -38,7 +38,7 @@ def readExcel(filename):
 def diffExcel(file1, file2):
     df1 = readExcel(file1)
     df2 = readExcel(file2)
-    df3 = pd.read_excel("long.xlsx")
+    df3 = pd.read_excel("周刊长期.xlsx")
     long_array = []
     mainrank = []
     longrank = []
@@ -54,22 +54,39 @@ def diffExcel(file1, file2):
             df1.at[i, "评语"] = "New"
             continue
         # 主榜三期连续在榜
-        # if (
-        #     not df3.loc[df3[weeks - 1] == df1.at[i, "aid"]].empty
-        #     and not df3.loc[df3[weeks - 2] == df1.at[i, "aid"]].empty
-        # ):
         long_status = [
-            bool(
-                not df3.loc[df3[w + 1] == df1.at[i, "aid"]].empty
-                and not df3.loc[df3[w + 2] == df1.at[i, "aid"]].empty
-                and not df3.loc[df3[w + 3] == df1.at[i, "aid"]].empty
-            )
-            for w in range(weeks - 2)
+            bool(not df3.loc[df3[weeks - 5] == df1.at[i, "aid"]].empty),
+            bool(not df3.loc[df3[weeks - 4] == df1.at[i, "aid"]].empty),
+            bool(not df3.loc[df3[weeks - 3] == df1.at[i, "aid"]].empty),
+            bool(not df3.loc[df3[weeks - 2] == df1.at[i, "aid"]].empty),
+            bool(not df3.loc[df3[weeks - 1] == df1.at[i, "aid"]].empty),
+            bool(df1.at[i, "排名"] <= 20 + len(long_array)),
         ]
-        if True in long_status and lastrank <= 20 + len(long_array):
+        if i < 30:
+            print(df1.at[i, "aid"], long_status)
+        if long_status[3:6] == [True] * 3:
             long_array.append(i)
-        # 副榜内三期连续在榜
+        elif long_status[2:5] == [True] * 3:
+            long_array.append(i)
+        elif long_status[1:4] == [True] * 3:
+            long_array.append(i)
+        elif long_status[0:3] == [True] * 3 and long_status[3:6] != [False] * 3:
+            long_array.append(i)
+        else:
+            pass
         df1.at[i, "评语"] = f"上周{lastrank}"
+        # long_status = [
+        #     bool(
+        #         not df3.loc[df3[w + 1] == df1.at[i, "aid"]].empty
+        #         and not df3.loc[df3[w + 2] == df1.at[i, "aid"]].empty
+        #         and not df3.loc[df3[w + 3] == df1.at[i, "aid"]].empty
+        #     )
+        #     for w in range(weeks - 2)
+        # ]
+        # if True in long_status and lastrank <= 20 + len(long_array):
+        #     long_array.append(i)
+        # 副榜内三期连续在榜
+        # df1.at[i, "评语"] = f"上周{lastrank}"
 
     print(long_array)
     if len(long_array) > 0:
@@ -84,7 +101,7 @@ def diffExcel(file1, file2):
     print(df1[0:50])
     mainrank = df1.loc[df1.index < 20]["aid"].to_list()
     df3[weeks] = pd.Series(mainrank + longrank)
-    df3.to_excel("long.xlsx", index=False)
+    df3.to_excel("周刊长期.xlsx", index=False)
     df1.loc[2.5] = df1.columns.to_list()
     df1.loc[9.5] = df1.columns.to_list()
     df1.loc[19.5] = df1.columns.to_list()
@@ -95,8 +112,8 @@ def diffExcel(file1, file2):
 
 
 def main():
-    this_excel = f"{this_date}_to_{end_date}.csv"
-    past_excel = f"{last_date}_to_{this_date}.csv"
+    this_excel = f"./统计数据/{this_date}_to_{end_date}.csv"
+    past_excel = f"./统计数据/{last_date}_to_{this_date}.csv"
     diffExcel(this_excel, past_excel)
 
 
