@@ -1,22 +1,28 @@
-*_AME/
-.vscode/
-__pycache__/
-build/
-dist/
-node_modules/
-ranking/
-venv/
-*.7z
-*.aep
-*.csv
-*.exe
-*.js
+# 工程素材
+绿幕抠图/
+pic/
+
+# 榜单素材
+经典推荐/
+旧稿推荐/
+冷门推荐/
+主榜视频/
+主榜3-1/
+主榜10-4/
+主榜20-11/
+副榜21-125/
+*期连续在榜/
+
+# 数据文件
+psdownload/download.txt
 *.json
-*.mov
-*.mp4
-*.png
-*.psd
-*.spec
-*.txt
 *.xlsx
-*.zip
+*.csv
+*.tar.bz2
+
+# 辅助工具
+*.js
+*.bat
+
+# 编译产物
+*.exe
