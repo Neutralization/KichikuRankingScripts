@@ -2,6 +2,7 @@
 
 import arrow
 import pandas as pd
+import requests
 
 PAST = arrow.get("2021-11-08 00:00:00", "YYYY-MM-DD HH:mm:ss")
 NOW = arrow.now()
@@ -11,6 +12,27 @@ weekday = int(NOW.format("d"))
 last_date = NOW.shift(days=-(weekday + 13)).format("YYYY-MM-DD")
 this_date = NOW.shift(days=-(weekday + 6)).format("YYYY-MM-DD")
 end_date = NOW.shift(days=-(weekday - 1)).format("YYYY-MM-DD")
+
+
+def getusername(uid):
+    headers = {
+        "authority": "api.bilibili.com",
+        "origin": "https://space.bilibili.com",
+        "referer": f"https://space.bilibili.com/{uid}",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+    }
+    params = {
+        "mid": uid,
+        "jsonp": "jsonp",
+    }
+    response = requests.get(
+        "https://api.bilibili.com/x/space/acc/info", params=params, headers=headers
+    ).json()
+    try:
+        return response["data"].get("name")
+    except AttributeError:
+        print(response)
+        return uid
 
 
 def readExcel(filename):
@@ -23,8 +45,10 @@ def readExcel(filename):
         exclude = df.loc[df["aid"] == aid].index
         df = df.drop(exclude)
         df = df.sort_index().reset_index(drop=True)
+    columns = df.columns.to_list()
+    df.insert(columns.index("mid") + 1, "up主", [i + 1 for i in range(len(df.index))])
     df.insert(0, "排名", [i + 1 for i in range(len(df.index))])
-    df.insert(0, "评语", ["" for i in range(len(df.index))])
+    df.insert(0, "评语", [""] * len(df.index))
 
     for i in range(1000):
         df.loc[i, "转化率"] = f"{int(df.at[i, '转化率']*100)}%"
@@ -62,8 +86,8 @@ def diffExcel(file1, file2):
             bool(not df3.loc[df3[weeks - 1] == df1.at[i, "aid"]].empty),
             bool(df1.at[i, "排名"] <= 20 + len(long_array)),
         ]
-        if i < 30:
-            print(df1.at[i, "aid"], long_status)
+        # if i < 30:
+        #     print(df1.at[i, "aid"], long_status)
         if long_status[3:6] == [True] * 3:
             long_array.append(i)
         elif long_status[2:5] == [True] * 3:
@@ -87,8 +111,15 @@ def diffExcel(file1, file2):
         #     long_array.append(i)
         # 副榜内三期连续在榜
         # df1.at[i, "评语"] = f"上周{lastrank}"
-
-    print(long_array)
+    for x in df1[0:150].index:
+        df1.at[x, "up主"] = getusername(df1.at[x, "mid"])
+    print(
+        df1.loc[
+            :30,
+            ["排名", "aid", "bvid", "up主", "title"],
+        ]
+    )
+    # print(long_array)
     if len(long_array) > 0:
         long = df1.iloc[long_array, :]
         longrank = long.loc[long["排名"] <= 20 + len(long_array)]["aid"].to_list()
@@ -98,7 +129,6 @@ def diffExcel(file1, file2):
         df1.drop(long_array, inplace=True)
     df1 = df1.sort_index().reset_index(drop=True)
 
-    print(df1[0:50])
     mainrank = df1.loc[df1.index < 20]["aid"].to_list()
     df3[weeks] = pd.Series(mainrank + longrank)
     df3.to_excel("周刊长期.xlsx", index=False)
