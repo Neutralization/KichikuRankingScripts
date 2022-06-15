@@ -1,4 +1,4 @@
-// @include "json2.js"
+// @include "json2/json2.js"
 
 app.project.close(CloseOptions.PROMPT_TO_SAVE_CHANGES);
 app.newProject();
