@@ -3,17 +3,17 @@
 import asyncio
 import json
 from functools import reduce
+from os.path import abspath
 
 import aiohttp
 import arrow
-from pandas import read_csv, read_excel, to_datetime, Series
 import requests
+from pandas import Series, read_csv, read_excel, to_datetime
 
 PAST = arrow.get("2021-11-08 00:00:00", "YYYY-MM-DD HH:mm:ss")
 NOW = arrow.now()
 weeks = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
 weekday = int(NOW.format("d"))
-# long_date = NOW.shift(days=-(weekday + 20)).format("YYYY-MM-DD")
 last_date = NOW.shift(days=-(weekday + 13)).format("YYYY-MM-DD")
 this_date = NOW.shift(days=-(weekday + 6)).format("YYYY-MM-DD")
 end_date = NOW.shift(days=-(weekday - 1)).format("YYYY-MM-DD")
@@ -21,7 +21,7 @@ end_date = NOW.shift(days=-(weekday - 1)).format("YYYY-MM-DD")
 
 async def getusername(uid):
     headers = {
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
     }
     params = {
         "mid": uid,
@@ -41,7 +41,7 @@ async def getusername(uid):
 
 async def getcover(aid):
     headers = {
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
     }
     params = {
         "aid": aid,
@@ -67,7 +67,7 @@ def downcover(rank, aid, link):
 
 
 def readExcel(filename):
-    print(filename)
+    print(f"\n加载文件\n\t{abspath(filename)}\n")
     df = read_csv(filename)
     df.sort_values(by="总分", inplace=True, ascending=False)
     df = df.reset_index(drop=True)
@@ -117,8 +117,6 @@ def diffExcel(file1, file2):
             bool(not df3.loc[df3[weeks - 1] == df1.at[i, "aid"]].empty),
             bool(df1.at[i, "排名"] <= 20 + len(long_array)),
         ]
-        # if i < 30:
-        #     print(df1.at[i, "aid"], long_status)
         if long_status[3:6] == [True] * 3:
             long_array.append(i)
         elif long_status[2:5] == [True] * 3:
@@ -130,19 +128,8 @@ def diffExcel(file1, file2):
         else:
             pass
         df1.at[i, "评语"] = f"上周{lastrank}"
-        # long_status = [
-        #     bool(
-        #         not df3.loc[df3[w + 1] == df1.at[i, "aid"]].empty
-        #         and not df3.loc[df3[w + 2] == df1.at[i, "aid"]].empty
-        #         and not df3.loc[df3[w + 3] == df1.at[i, "aid"]].empty
-        #     )
-        #     for w in range(weeks - 2)
-        # ]
-        # if True in long_status and lastrank <= 20 + len(long_array):
-        #     long_array.append(i)
-        # 副榜内三期连续在榜
-        # df1.at[i, "评语"] = f"上周{lastrank}"
-    print("获取UP主昵称...")
+
+    print("\n获取UP主昵称...\n")
     nametasks = [
         asyncio.ensure_future(getusername(int(df1.at[x, "mid"])))
         for x in df1[0:150].index
@@ -152,13 +139,7 @@ def diffExcel(file1, file2):
     usernames = reduce(lambda x, y: {**x, **y}, usernames)
     for x in df1[0:150].index:
         df1.at[x, "up主"] = usernames[df1.at[x, "mid"]]
-    print(
-        df1.loc[
-            :30,
-            ["排名", "aid", "bvid", "up主", "title"],
-        ]
-    )
-    # print(long_array)
+
     if len(long_array) > 0:
         long = df1.iloc[long_array, :]
         longrank = long.loc[long["排名"] <= 20 + len(long_array)]["aid"].to_list()
@@ -175,9 +156,8 @@ def diffExcel(file1, file2):
     df1.loc[9.5] = df1.columns.to_list()
     df1.loc[19.5] = df1.columns.to_list()
     df1 = df1.sort_index().reset_index(drop=True)
-    # print(df1[0:23])
 
-    print("获取视频封面...")
+    print("\n获取视频封面...\n")
     covertasks = [
         asyncio.ensure_future(getcover(int(df1.at[x, "aid"])))
         for x in df1[0:128].index
@@ -204,12 +184,19 @@ def diffExcel(file1, file2):
     )
 
     df1[0:128].to_excel(f"{weeks:03d}期主榜.xlsx", index=False)
+    print(
+        df1.loc[
+            :21,
+            ["排名", "aid", "bvid", "up主", "title"],
+        ]
+    )
 
 
 def main():
     this_excel = f"./统计数据/{this_date}_to_{end_date}.csv"
     past_excel = f"./统计数据/{last_date}_to_{this_date}.csv"
     diffExcel(this_excel, past_excel)
+    input("\n执行完毕，可以退出\n")
 
 
 if __name__ == "__main__":
