@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import asyncio
+import json
+from functools import reduce
+
+import aiohttp
 import arrow
-import pandas as pd
+from pandas import read_csv, read_excel, to_datetime, Series
 import requests
 
 PAST = arrow.get("2021-11-08 00:00:00", "YYYY-MM-DD HH:mm:ss")
@@ -14,30 +19,56 @@ this_date = NOW.shift(days=-(weekday + 6)).format("YYYY-MM-DD")
 end_date = NOW.shift(days=-(weekday - 1)).format("YYYY-MM-DD")
 
 
-def getusername(uid):
+async def getusername(uid):
     headers = {
-        "authority": "api.bilibili.com",
-        "origin": "https://space.bilibili.com",
-        "referer": f"https://space.bilibili.com/{uid}",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
     }
     params = {
         "mid": uid,
         "jsonp": "jsonp",
     }
-    response = requests.get(
-        "https://api.bilibili.com/x/space/acc/info", params=params, headers=headers
-    ).json()
-    try:
-        return response["data"].get("name")
-    except AttributeError:
-        print(response)
-        return uid
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            "https://api.bilibili.com/x/space/acc/info", params=params, headers=headers
+        ) as resp:
+            content = await resp.text()
+            result = json.loads(content)
+    if result.get("code") == 0:
+        return {uid: result["data"].get("name")}
+    else:
+        return {uid: uid}
+
+
+async def getcover(aid):
+    headers = {
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
+    }
+    params = {
+        "aid": aid,
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            "https://api.bilibili.com/x/web-interface/view",
+            params=params,
+            headers=headers,
+        ) as resp:
+            content = await resp.text()
+            result = json.loads(content)
+    if result.get("code") == 0:
+        return {aid: result["data"].get("pic")}
+    else:
+        return {aid: None}
+
+
+def downcover(rank, aid, link):
+    response = requests.get(link)
+    with open(f"./pic/{rank}_av{aid}.jpg", "wb") as f:
+        f.write(response.content)
 
 
 def readExcel(filename):
     print(filename)
-    df = pd.read_csv(filename)
+    df = read_csv(filename)
     df.sort_values(by="总分", inplace=True, ascending=False)
     df = df.reset_index(drop=True)
     ex_aids = [int(line.strip("\n")) for line in open("周刊除外.csv", "r")]
@@ -53,7 +84,7 @@ def readExcel(filename):
     for i in range(1000):
         df.loc[i, "转化率"] = f"{int(df.at[i, '转化率']*100)}%"
         df.loc[i, "总分"] = int(df.at[i, "总分"])
-        df.at[i, "pubdate"] = pd.to_datetime(
+        df.at[i, "pubdate"] = to_datetime(
             df.loc[i, "pubdate"], format="%Y-%m-%d %H:%M:%S"
         ).strftime("%Y/%m/%d %H:%M")
     return df[0:1000]
@@ -62,7 +93,7 @@ def readExcel(filename):
 def diffExcel(file1, file2):
     df1 = readExcel(file1)
     df2 = readExcel(file2)
-    df3 = pd.read_excel("周刊长期.xlsx")
+    df3 = read_excel("周刊长期.xlsx")
     long_array = []
     mainrank = []
     longrank = []
@@ -111,8 +142,16 @@ def diffExcel(file1, file2):
         #     long_array.append(i)
         # 副榜内三期连续在榜
         # df1.at[i, "评语"] = f"上周{lastrank}"
+    print("获取UP主昵称...")
+    nametasks = [
+        asyncio.ensure_future(getusername(int(df1.at[x, "mid"])))
+        for x in df1[0:150].index
+    ]
+    nameloop = asyncio.get_event_loop()
+    usernames = nameloop.run_until_complete(asyncio.gather(*nametasks))
+    usernames = reduce(lambda x, y: {**x, **y}, usernames)
     for x in df1[0:150].index:
-        df1.at[x, "up主"] = getusername(df1.at[x, "mid"])
+        df1.at[x, "up主"] = usernames[df1.at[x, "mid"]]
     print(
         df1.loc[
             :30,
@@ -130,13 +169,39 @@ def diffExcel(file1, file2):
     df1 = df1.sort_index().reset_index(drop=True)
 
     mainrank = df1.loc[df1.index < 20]["aid"].to_list()
-    df3[weeks] = pd.Series(mainrank + longrank)
+    df3[weeks] = Series(mainrank + longrank)
     df3.to_excel("周刊长期.xlsx", index=False)
     df1.loc[2.5] = df1.columns.to_list()
     df1.loc[9.5] = df1.columns.to_list()
     df1.loc[19.5] = df1.columns.to_list()
     df1 = df1.sort_index().reset_index(drop=True)
     # print(df1[0:23])
+
+    print("获取视频封面...")
+    covertasks = [
+        asyncio.ensure_future(getcover(int(df1.at[x, "aid"])))
+        for x in df1[0:128].index
+        if df1.at[x, "aid"] != "aid"
+    ]
+    coverloop = asyncio.get_event_loop()
+    covers = coverloop.run_until_complete(asyncio.gather(*covertasks))
+    covers = reduce(lambda x, y: {**x, **y}, covers)
+    list(
+        map(
+            downcover,
+            [int(df1.at[x, "排名"]) for x in df1[0:128].index if df1.at[x, "排名"] != "排名"],
+            [
+                int(df1.at[x, "aid"])
+                for x in df1[0:128].index
+                if df1.at[x, "aid"] != "aid"
+            ],
+            [
+                covers[int(df1.at[x, "aid"])]
+                for x in df1[0:128].index
+                if df1.at[x, "aid"] != "aid"
+            ],
+        )
+    )
 
     df1[0:128].to_excel(f"{weeks:03d}期主榜.xlsx", index=False)
 
