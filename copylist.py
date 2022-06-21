@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import os
+
 import arrow
 import pandas as pd
 
 PAST = arrow.get("2021-11-08 00:00:00", "YYYY-MM-DD HH:mm:ss")
 NOW = arrow.now()
 weeks = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
-weeks = 32
+# weeks = 32
 
 
 def find(week, name):
