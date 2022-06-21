@@ -57,20 +57,26 @@ async def getcover(aid):
     if result.get("code") == 0:
         return {aid: result["data"].get("pic")}
     else:
+        print(f"av{aid}封面获取失败: {result.get('message')}")
         return {aid: None}
 
 
 def downcover(rank, aid, link):
-    response = requests.get(link)
+    try:
+        response = requests.get(link)
+    except requests.exceptions.MissingSchema:
+        print(f"requests.exceptions.MissingSchema: av{aid}\n")
+        return None
     with open(f"./pic/{rank}_av{aid}.jpg", "wb") as f:
         f.write(response.content)
 
 
 def readExcel(filename):
-    print(f"\n加载文件\n\t{abspath(filename)}\n")
+    print(f"\n加载文件\n\t{abspath(filename)}")
     df = read_csv(filename)
     df.sort_values(by="总分", inplace=True, ascending=False)
     df = df.reset_index(drop=True)
+    print(f"\n加载文件\n\t{abspath('周刊除外.csv')}")
     ex_aids = [int(line.strip("\n")) for line in open("周刊除外.csv", "r")]
     for aid in ex_aids:
         exclude = df.loc[df["aid"] == aid].index
@@ -93,6 +99,7 @@ def readExcel(filename):
 def diffExcel(file1, file2):
     df1 = readExcel(file1)
     df2 = readExcel(file2)
+    print(f"\n加载文件\n\t{abspath('周刊长期.xlsx')}")
     df3 = read_excel("周刊长期.xlsx")
     long_array = []
     mainrank = []
@@ -129,7 +136,7 @@ def diffExcel(file1, file2):
             pass
         df1.at[i, "评语"] = f"上周{lastrank}"
 
-    print("\n获取UP主昵称...\n")
+    print("\n获取UP主昵称...")
     nametasks = [
         asyncio.ensure_future(getusername(int(df1.at[x, "mid"])))
         for x in df1[0:150].index
@@ -157,7 +164,7 @@ def diffExcel(file1, file2):
     df1.loc[19.5] = df1.columns.to_list()
     df1 = df1.sort_index().reset_index(drop=True)
 
-    print("\n获取视频封面...\n")
+    print("\n获取视频封面...")
     covertasks = [
         asyncio.ensure_future(getcover(int(df1.at[x, "aid"])))
         for x in df1[0:128].index
