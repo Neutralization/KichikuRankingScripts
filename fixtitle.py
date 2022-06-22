@@ -20,6 +20,15 @@ weeks = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
 "".encode("idna")
 
 
+def find(week, name):
+    for files in listdir("."):
+        if files.endswith(".xlsx") and week in files and name in files:
+            print(f"\t找到{week}期{name}Excel文件")
+            return files
+    print(f"\t未找到{week}期{name}Excel文件")
+    return None
+
+
 def readExcel(filename):
     wb = load_workbook(filename, data_only=True)
     ws = wb.active
@@ -34,7 +43,7 @@ def readExcel(filename):
                 data_cols[ws[col_num + str(1)].value] = ws[col_num + str(row)].value
         xlsx_data.append(data_cols)
     xlsx_data = list(filter(lambda x: x != {} and set(x.values()) != {None}, xlsx_data))
-    print([x["bvid"] for x in xlsx_data if x["bvid"] != "bvid"])
+    # print([x["bvid"] for x in xlsx_data if x["bvid"] != "bvid"])
     return [x["bvid"] for x in xlsx_data if x["bvid"] != "bvid"]
 
 
@@ -76,23 +85,17 @@ async def getVideoTitle(bvid):
 
 
 def main():
-    main_excel = [
-        f
-        for f in listdir(".")
-        if ("~$" not in f and f"{start_date}_to_{end_date}" in f)
-    ]
-    if len(main_excel) > 0:
-        print(f"\n\t找到文件名包含“{start_date}_to_{end_date}”的Excel文件\n")
-        ranks = readExcel(main_excel[0])
+    main_excel = find(f"{weeks:03d}", "主榜")
+    if main_excel is not None:
+        ranks = readExcel(main_excel)
         tasks = [asyncio.ensure_future(getVideoTitle(bvid)) for bvid in ranks]
         loop = asyncio.get_event_loop()
         VideoTitles = loop.run_until_complete(asyncio.gather(*tasks))
         VideoTitleDict = reduce(lambda x, y: {**x, **y}, VideoTitles)
-        print(VideoTitleDict)
-        writeExcel(main_excel[0], VideoTitleDict)
-    else:
-        print("\n\t未找到主榜Excel文件\n")
+        # print(VideoTitleDict)
+        writeExcel(main_excel, VideoTitleDict)
     input("\n\t现在可以关闭本程序\n")
 
 
-main()
+if __name__ == "__main__":
+    main()
