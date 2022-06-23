@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from json import dumps
 from os import listdir
-from os.path import abspath, isfile
+from os.path import abspath
 
 import arrow
 from openpyxl import load_workbook
@@ -9,6 +9,19 @@ from openpyxl.utils import get_column_letter
 
 PAST = arrow.get("2021-11-08 00:00:00", "YYYY-MM-DD HH:mm:ss")
 NOW = arrow.now()
+weekday = int(NOW.format("d"))
+start_date = NOW.shift(days=-(weekday + 6)).format("YYYY-MM-DD")
+end_date = NOW.shift(days=-(weekday - 1)).format("YYYY-MM-DD")
+weeks = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
+
+
+def find(week, name):
+    for files in listdir("."):
+        if files.endswith(".xlsx") and week in files and name in files:
+            print(f"\t找到{week}期{name}Excel文件")
+            return files
+    print(f"\t未找到{week}期{name}Excel文件")
+    return None
 
 
 def an2cn(num):
@@ -23,13 +36,6 @@ def an2cn(num):
             if num % 10 != 0
             else a2c[num // 10] + "十"
         )
-
-
-weekday = int(NOW.format("d"))
-start_date = NOW.shift(days=-(weekday + 6)).format("YYYY-MM-DD")
-end_date = NOW.shift(days=-(weekday - 1)).format("YYYY-MM-DD")
-weeks = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
-weeks_cn = an2cn(weeks)
 
 
 def xlsx2json(filename, ranktype):
@@ -144,64 +150,41 @@ def xlsx2json(filename, ranktype):
             f.write(data)
 
 
-print(f"\n\t现在是 {NOW.format('YYYY-MM-DD HH:MM:SS')}，本周应该是周刊第{weeks_cn}期")
+def main():
+    print(f"\n\t现在是 {NOW.format('YYYY-MM-DD HH:MM:SS')}，本周应该是周刊第{an2cn(weeks)}期")
+    print(f"\n\t将会查找文件名包含“主榜”“{weeks}”的Excel文件")
+    print(f"\n\t将会查找文件名包含“连续在榜”“{weeks}”的Excel文件")
+    print(f"\n\t将会查找文件名包含“旧稿回顾”“{an2cn(weeks)}”的Excel文件")
+    print(f"\n\t将会查找文件名包含“经典回顾”“{an2cn(weeks)}”的Excel文件")
 
-print(f"\n\t将会查找文件名包含“主榜”“{weeks}”的Excel文件")
-print(f"\n\t将会查找文件名包含“连续在榜”“{weeks}”的Excel文件")
-print(f"\n\t将会查找文件名包含“旧稿回顾”“{weeks_cn}”的Excel文件")
-print(f"\n\t将会查找文件名包含“经典回顾”“{weeks_cn}”的Excel文件")
+    input("\n\t回车继续执行...")
 
-null = input("\n\t回车继续执行...")
+    with open("./psdownload/download.txt", "w", encoding="utf-8") as f:
+        f.write("")
 
-with open("./psdownload/download.txt", "w", encoding="utf-8") as f:
-    f.write("")
+    main_excel = find(f"{weeks:03d}", "主榜")
+    if main_excel is not None:
+        xlsx2json(main_excel, "主榜")
+        print("\tAE脚本数据“data.json”已经生成")
 
-main_excel = [
-    f
-    for f in listdir(".")
-    # if (isfile(f) and "~$" not in f and f"{start_date}_to_{end_date}" in f)
-    if (isfile(f) and "~$" not in f and "主榜" in f and f"{weeks}期" in f)
-]
-if len(main_excel) > 0:
-    print(f"\n\t找到Excel文件“{main_excel[0]}”")
-    xlsx2json(main_excel[0], "主榜")
-    print("\tAE脚本数据“data.json”已经生成")
-else:
-    print("\n\t未找到主榜Excel文件")
-long_excel = [
-    f
-    for f in listdir(".")
-    if (isfile(f) and "~$" not in f and "连续在榜" in f and f"{weeks}期" in f)
-]
-if len(long_excel) > 0:
-    print(f"\n\t找到Excel文件“{long_excel[0]}”")
-    xlsx2json(long_excel[0], "连续")
-    print("\tAE脚本数据“data_连续.json”已经生成")
-else:
-    print("\n\t未找到连续在榜Excel文件")
-old_excel = [
-    f
-    for f in listdir(".")
-    if (isfile(f) and "~$" not in f and "旧稿回顾" in f and weeks_cn in f)
-]
-if len(old_excel) > 0:
-    print(f"\n\t找到Excel文件“{old_excel[0]}”")
-    xlsx2json(old_excel[0], "旧稿")
-    print("\tAE脚本数据“data_旧稿.json”已经生成")
-else:
-    print("\n\t未找到旧稿回顾Excel文件")
-trad_excel = [
-    f
-    for f in listdir(".")
-    if (isfile(f) and "~$" not in f and "经典回顾" in f and weeks_cn in f)
-]
-if len(trad_excel) > 0:
-    print(f"\n\t找到Excel文件“{trad_excel[0]}”")
-    xlsx2json(trad_excel[0], "经典")
-    print("\tAE脚本数据“data_经典&冷门.json”已经生成")
-else:
-    print("\n\t未找到经典回顾Excel文件")
+    continuity_excel = find(f"{weeks:03d}", "连续在榜")
+    if continuity_excel is not None:
+        xlsx2json(continuity_excel, "连续")
+        print("\tAE脚本数据“data_连续.json”已经生成")
 
-if len(main_excel) + len(old_excel) + len(trad_excel) + len(long_excel) > 0:
+    old_excel = find(an2cn(weeks), "旧稿回顾")
+    if old_excel is not None:
+        xlsx2json(old_excel, "旧稿")
+        print("\tAE脚本数据“data_旧稿.json”已经生成")
+
+    classic_excel = find(an2cn(weeks), "经典回顾")
+    if classic_excel is not None:
+        xlsx2json(classic_excel, "经典")
+        print("\tAE脚本数据“data_经典&冷门.json”已经生成")
+
     print(f"\n\t视频下载列表已保存至“{abspath('./psdownload/download.txt')}”")
-null = input("\t现在可以关闭本程序")
+    input("\t现在可以关闭本程序")
+
+
+if __name__ == "__main__":
+    main()
