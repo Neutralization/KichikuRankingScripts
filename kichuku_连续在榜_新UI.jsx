@@ -42,11 +42,14 @@ for (key in StaticResource) {
 
 // ITEM INDEX
 ResourceID = {};
-for (n = 1; n <= app.project.items.length; n++) {
-    ResourceID[app.project.items[n].name] = n;
-}
 
 // FUNCTION
+function ReCountResource() {
+    for (n = 1; n <= app.project.items.length; n++) {
+        ResourceID[app.project.items[n].name] = n;
+    }
+}
+
 function AddLayer(Target, Name, Duration, Offset) {
     NewLayer = Target.layers.add(app.project.items[ResourceID[Name]], Duration);
     NewLayer.startTime = Offset;
@@ -220,6 +223,7 @@ function BezierCurve(point1, point2, point3, point4, input_x) {
     );
 }
 
+ReCountResource();
 // Part 1
 Globaloffset = 0;
 SingleLength = 25;
@@ -294,7 +298,7 @@ for (rank = LastRank; rank >= 1; rank -= 1) {
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + 2, 100);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + SingleLength - 2, 100);
     RankDataLayer.property('Opacity').setValueAtTime(Globaloffset + SingleLength - 1, 0);
-    if (rank == LastRank) {
+    if (rank == 1) {
         addNext = 0;
     } else {
         addNext = 1;
