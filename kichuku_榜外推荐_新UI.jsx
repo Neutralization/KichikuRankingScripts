@@ -239,7 +239,7 @@ ChangeLayer = AddLayer(Part1, 'change', 5, 0);
 Globaloffset += 5;
 
 for (rank = 1; rank <= LastRank; rank += 1) {
-    RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
+    RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank] + SingleLength);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);
@@ -315,7 +315,7 @@ BlackLayer = Part2.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1]
 BlackLayer.outPoint = Part2.duration;
 ChangeLayer = AddLayer(Part2, 'change2', 5, 0);
 Globaloffset += 5;
-RankVideoLayer = AddLayer(Part2, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
+RankVideoLayer = AddLayer(Part2, rank + '_V', SingleLength, Globaloffset - OffsetData[rank] + SingleLength);
 RankVideoLayer.inPoint = Globaloffset;
 RankVideoLayer.outPoint = Globaloffset + SingleLength;
 VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);

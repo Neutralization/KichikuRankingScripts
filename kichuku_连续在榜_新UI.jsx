@@ -240,7 +240,7 @@ ChangeLayer = AddLayer(Part1, 'change', 5, 0);
 Globaloffset += 5;
 
 for (rank = LastRank; rank >= 1; rank -= 1) {
-    RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
+    RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank] + SingleLength);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);

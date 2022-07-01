@@ -305,7 +305,7 @@ for (rank = 30; rank > 10; rank -= 1) {
         continue;
     }
     app.project.items[ResourceID[rank + '_V']].mainSource.loop = 2;
-    RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
+    RankVideoLayer = AddLayer(Part1, rank + '_V', SingleLength, Globaloffset - OffsetData[rank] + SingleLength);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);
@@ -424,7 +424,7 @@ for (rank = 10; rank > 3; rank -= 1) {
         continue;
     }
     app.project.items[ResourceID[rank + '_V']].mainSource.loop = 2;
-    RankVideoLayer = AddLayer(Part2, rank + '_V', SingleLength, Globaloffset - OffsetData[rank]);
+    RankVideoLayer = AddLayer(Part2, rank + '_V', SingleLength, Globaloffset - OffsetData[rank] + SingleLength);
     RankVideoLayer.inPoint = Globaloffset;
     RankVideoLayer.outPoint = Globaloffset + SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);
@@ -592,7 +592,7 @@ for (rank = 3; rank > 0; rank -= 1) {
     PreComp = app.project.items.addComp('Pre' + rank + '_V', 1920, 1080, 1, SingleLength, 60);
     ReCountResource();
 
-    RankVideoLayer = AddLayer(PreComp, rank + '_V', SingleLength, 0 - OffsetData[rank]);
+    RankVideoLayer = AddLayer(PreComp, rank + '_V', SingleLength, 0 - OffsetData[rank] + SingleLength);
     RankVideoLayer.inPoint = 0;
     RankVideoLayer.outPoint = SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);

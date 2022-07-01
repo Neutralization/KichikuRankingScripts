@@ -249,7 +249,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     BlackLayer = PreComp.layers.addSolid([0, 0, 0], '黑底', CompSize[0], CompSize[1], 1, 1);
     BlackLayer.outPoint = PreComp.duration;
 
-    RankVideoLayer = AddLayer(PreComp, rank + '_V', SingleLength, 0 - OffsetData[rank]);
+    RankVideoLayer = AddLayer(PreComp, rank + '_V', SingleLength, 0 - OffsetData[rank] + SingleLength);
     RankVideoLayer.inPoint = 0;
     RankVideoLayer.outPoint = SingleLength;
     VideoItemSize = RankVideoLayer.sourceRectAtTime(RankVideoLayer.inPoint, false);
