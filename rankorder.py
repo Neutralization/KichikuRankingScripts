@@ -57,7 +57,7 @@ async def getcover(aid):
     if result.get("code") == 0:
         return {aid: result["data"].get("pic")}
     else:
-        print(f"av{aid}封面获取失败: {result.get('message')}")
+        print(f"av{aid} 封面获取失败: {result.get('message')}")
         return {aid: None}
 
 
@@ -102,8 +102,6 @@ def diffExcel(file1, file2):
     print(f"\n加载文件\n\t{abspath('周刊长期.xlsx')}")
     df3 = read_excel("周刊长期.xlsx")
     long_array = []
-    mainrank = []
-    longrank = []
     for i in range(len(df1.index)):
         # 新稿件
         if df2.loc[df2["aid"] == df1.at[i, "aid"]].empty:
@@ -116,24 +114,25 @@ def diffExcel(file1, file2):
             df1.at[i, "评语"] = "New"
             continue
         # 主榜三期连续在榜
-        long_status = [
-            bool(not df3.loc[df3[weeks - 5] == df1.at[i, "aid"]].empty),
-            bool(not df3.loc[df3[weeks - 4] == df1.at[i, "aid"]].empty),
-            bool(not df3.loc[df3[weeks - 3] == df1.at[i, "aid"]].empty),
-            bool(not df3.loc[df3[weeks - 2] == df1.at[i, "aid"]].empty),
-            bool(not df3.loc[df3[weeks - 1] == df1.at[i, "aid"]].empty),
-            bool(df1.at[i, "排名"] <= 20 + len(long_array)),
-        ]
-        if long_status[3:6] == [True] * 3:
-            long_array.append(i)
-        elif long_status[2:5] == [True] * 3:
-            long_array.append(i)
-        elif long_status[1:4] == [True] * 3:
-            long_array.append(i)
-        elif long_status[0:3] == [True] * 3 and long_status[3:6] != [False] * 3:
-            long_array.append(i)
-        else:
-            pass
+        if df1.at[i, "排名"] <= 20 + len(long_array):
+            long_status = [
+                bool(not df3.loc[df3[weeks - 5] == df1.at[i, "aid"]].empty),
+                bool(not df3.loc[df3[weeks - 4] == df1.at[i, "aid"]].empty),
+                bool(not df3.loc[df3[weeks - 3] == df1.at[i, "aid"]].empty),
+                bool(not df3.loc[df3[weeks - 2] == df1.at[i, "aid"]].empty),
+                bool(not df3.loc[df3[weeks - 1] == df1.at[i, "aid"]].empty),
+                bool(df1.at[i, "排名"] <= 20),
+            ]
+            if long_status[3:6] == [True] * 3:
+                long_array.append(i)
+            elif long_status[2:5] == [True] * 3:
+                long_array.append(i)
+            elif long_status[1:4] == [True] * 3:
+                long_array.append(i)
+            elif long_status[0:3] == [True] * 3 and long_status[3:6] != [False] * 3:
+                long_array.append(i)
+            else:
+                pass
         df1.at[i, "评语"] = f"上周{lastrank}"
 
     print("\n获取UP主昵称...")
@@ -147,18 +146,18 @@ def diffExcel(file1, file2):
     for x in df1[0:150].index:
         df1.at[x, "up主"] = usernames[df1.at[x, "mid"]]
 
+    onrank = df1.loc[df1["排名"] <= 20 + len(long_array)]["aid"].to_list()
+    df3[weeks] = Series(onrank)
+    df3.to_excel("周刊长期.xlsx", index=False)
+
     if len(long_array) > 0:
         long = df1.iloc[long_array, :]
-        longrank = long.loc[long["排名"] <= 20 + len(long_array)]["aid"].to_list()
         onarray = long.loc[long["排名"] > 20 + len(long_array)].index
         long = long.drop(onarray)
         long.to_excel(f"{weeks:03d}期连续在榜.xlsx", index=False)
         df1.drop(long_array, inplace=True)
     df1 = df1.sort_index().reset_index(drop=True)
 
-    mainrank = df1.loc[df1.index < 20]["aid"].to_list()
-    df3[weeks] = Series(mainrank + longrank)
-    df3.to_excel("周刊长期.xlsx", index=False)
     df1.loc[2.5] = df1.columns.to_list()
     df1.loc[9.5] = df1.columns.to_list()
     df1.loc[19.5] = df1.columns.to_list()
