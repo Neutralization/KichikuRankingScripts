@@ -65,7 +65,7 @@ def downcover(rank, aid, link):
     try:
         response = requests.get(link)
     except requests.exceptions.MissingSchema:
-        print(f"requests.exceptions.MissingSchema: av{aid}\n")
+        print(f"{rank}_av{aid}.jpg 下载失败\n")
         return None
     with open(f"./pic/{rank}_av{aid}.jpg", "wb") as f:
         f.write(response.content)
