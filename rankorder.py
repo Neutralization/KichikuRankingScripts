@@ -138,10 +138,8 @@ def diffExcel(file1, file2):
         new.at[i, "评语"] = f"上周{lastrank}"
 
     print("\n获取UP主昵称...")
-    nametasks = [
-        asyncio.ensure_future(getusername(int(new.at[x, "mid"])))
-        for x in new[0:150].index
-    ]
+    mids = set([int(new.at[x, "mid"]) for x in new[0:150].index])
+    nametasks = [asyncio.ensure_future(getusername(x)) for x in mids]
     nameloop = asyncio.get_event_loop()
     usernames = nameloop.run_until_complete(asyncio.gather(*nametasks))
     usernames = reduce(lambda x, y: {**x, **y}, usernames)
