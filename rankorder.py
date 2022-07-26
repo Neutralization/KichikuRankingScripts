@@ -140,12 +140,12 @@ def diffExcel(file1, file2):
     print("\n获取UP主昵称...")
     nametasks = [
         asyncio.ensure_future(getusername(int(new.at[x, "mid"])))
-        for x in new[0 : 20 + len(long_array)].index
+        for x in new[0:150].index
     ]
     nameloop = asyncio.get_event_loop()
     usernames = nameloop.run_until_complete(asyncio.gather(*nametasks))
     usernames = reduce(lambda x, y: {**x, **y}, usernames)
-    for x in new[0 : 20 + len(long_array)].index:
+    for x in new[0:150].index:
         new.at[x, "up主"] = usernames[new.at[x, "mid"]]
 
     onrank = new.loc[new["排名"] <= 20 + len(long_array)]["aid"].to_list()
