@@ -14,9 +14,13 @@ PAST = arrow.get("2021-11-08 00:00:00", "YYYY-MM-DD HH:mm:ss")
 NOW = arrow.now()
 WEEKS = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
 WEEKDAY = int(NOW.format("d"))
-BEFORE = NOW.shift(days=-(WEEKDAY + 13)).format("YYYY-MM-DD")
-LAST = NOW.shift(days=-(WEEKDAY + 6)).format("YYYY-MM-DD")
-THIS = NOW.shift(days=-(WEEKDAY - 1)).format("YYYY-MM-DD")
+WBEFORE = NOW.shift(days=-(WEEKDAY + 13)).format("YYYY-MM-DD")
+WLAST = NOW.shift(days=-(WEEKDAY + 6)).format("YYYY-MM-DD")
+WTHIS = NOW.shift(days=-(WEEKDAY - 1)).format("YYYY-MM-DD")
+MONTH = abs(int(NOW.format("M")) - 5) + abs(int(NOW.format("YYYY")) - 2022)
+MBEFORE = NOW.shift(months=-2).format("YYYY-MM-01")
+MLAST = NOW.shift(months=-1).format("YYYY-MM-01")
+MTHIS = NOW.format("YYYY-MM-01")
 
 
 async def getusername(uid):
@@ -95,34 +99,34 @@ def readExcel(filename):
     return df[0:1000]
 
 
-def diffExcel(file1, file2):
+def diffExcel(ranktype, num, file1, file2):
     new = readExcel(file1)
     old = readExcel(file2)
-    print(f"\n加载文件\n\t{abspath('周刊长期.xlsx')}")
-    long = read_excel("周刊长期.xlsx")
+    print(f"\n加载文件\n\t{abspath(f'{ranktype}刊长期.xlsx')}")
+    long = read_excel(f"{ranktype}刊长期.xlsx")
     long_array = []
     for i in range(len(new.index)):
-        # 本周出现的新稿件
+        # 本期出现的新稿件
         if old.loc[old["aid"] == new.at[i, "aid"]].empty:
             new.at[i, "评语"] = "New"
             continue
         lastrank = old.loc[old["aid"] == new.at[i, "aid"]]["排名"].array[0]
-        # 上周排名在副榜外记作新上榜
+        # 上期排名在副榜外记作新上榜
         if lastrank > 125:
             new.at[i, "评语"] = "New"
             continue
-        # 六周内
+        # 六期内
         # 连续进入主榜三次记作连续在榜
-        # 本周必须严格进入主榜
+        # 本期必须严格进入主榜
         # 进入连续在榜后
         # 连续掉出主榜三次退出连续在榜
         if new.at[i, "排名"] <= 20 + len(long_array):
             long_status = [
-                bool(not long.loc[long[WEEKS - 5] == new.at[i, "aid"]].empty),
-                bool(not long.loc[long[WEEKS - 4] == new.at[i, "aid"]].empty),
-                bool(not long.loc[long[WEEKS - 3] == new.at[i, "aid"]].empty),
-                bool(not long.loc[long[WEEKS - 2] == new.at[i, "aid"]].empty),
-                bool(not long.loc[long[WEEKS - 1] == new.at[i, "aid"]].empty),
+                bool(not long.loc[long[num - 5] == new.at[i, "aid"]].empty),
+                bool(not long.loc[long[num - 4] == new.at[i, "aid"]].empty),
+                bool(not long.loc[long[num - 3] == new.at[i, "aid"]].empty),
+                bool(not long.loc[long[num - 2] == new.at[i, "aid"]].empty),
+                bool(not long.loc[long[num - 1] == new.at[i, "aid"]].empty),
                 bool(new.at[i, "排名"] <= 20),
             ]
             if long_status[3:6] == [True] * 3:
@@ -135,7 +139,7 @@ def diffExcel(file1, file2):
                 long_array.append(i)
             else:
                 pass
-        new.at[i, "评语"] = f"上周{lastrank}"
+        new.at[i, "评语"] = f"上{ranktype}{lastrank}"
 
     print("\n获取UP主昵称...")
     mids = set([int(new.at[x, "mid"]) for x in new[0:150].index])
@@ -147,14 +151,14 @@ def diffExcel(file1, file2):
         new.at[x, "up主"] = usernames[new.at[x, "mid"]]
 
     onrank = new.loc[new["排名"] <= 20 + len(long_array)]["aid"].to_list()
-    long[WEEKS] = Series(onrank)
-    long.to_excel("周刊长期.xlsx", index=False)
+    long[num] = Series(onrank)
+    long.to_excel(f"{ranktype}刊长期.xlsx", index=False)
 
     if len(long_array) > 0:
         long = new.iloc[long_array, :]
         onarray = long.loc[long["排名"] > 20 + len(long_array)].index
         long = long.drop(onarray)
-        long.to_excel(f"{WEEKS:03d}期连续在榜.xlsx", index=False)
+        long.to_excel(f"{ranktype}刊{num:03d}期连续在榜.xlsx", index=False)
         new.drop(long_array, inplace=True)
     new = new.sort_index().reset_index(drop=True)
 
@@ -178,7 +182,7 @@ def diffExcel(file1, file2):
     new.loc[9.5] = new.columns.to_list()
     new.loc[19.5] = new.columns.to_list()
     new = new.sort_index().reset_index(drop=True)
-    new[0:128].to_excel(f"{WEEKS:03d}期主榜.xlsx", index=False)
+    new[0:128].to_excel(f"{ranktype}刊{num:03d}期主榜.xlsx", index=False)
 
     print(
         new.loc[
@@ -190,11 +194,23 @@ def diffExcel(file1, file2):
 
 def main():
     global excluded
-    print(f"\n加载文件\n\t{abspath('周刊除外.csv')}")
-    excluded = [int(line.strip("\n")) for line in open("周刊除外.csv", "r")]
-    THIS_WEEK = f"./统计数据/{LAST}_to_{THIS}.csv"
-    LAST_WEEK = f"./统计数据/{BEFORE}_to_{LAST}.csv"
-    diffExcel(THIS_WEEK, LAST_WEEK)
+    ranktype = "周" if "w" in input("\n\t周刊(w) or 月刊(m)？\n") else "月"
+    print(f"\n加载文件\n\t{abspath(f'{ranktype}刊除外.csv')}")
+    excluded = [int(line.strip("\n")) for line in open(f"{ranktype}刊除外.csv", "r")]
+    if ranktype == "周":
+        diffExcel(
+            ranktype,
+            WEEKS,
+            f"./统计数据/{WLAST}_to_{WTHIS}.csv",
+            f"./统计数据/{WBEFORE}_to_{WLAST}.csv",
+        )
+    else:
+        diffExcel(
+            ranktype,
+            MONTH,
+            f"./统计数据/{MLAST}_to_{MTHIS}.csv",
+            f"./统计数据/{MBEFORE}_to_{MLAST}.csv",
+        )
     input("\n执行完毕，可以退出\n")
 
 
