@@ -28,6 +28,8 @@
     - .json文件*4
     - ./psdownload/download.txt
 - 修改 *.json
+  - 主榜 part-1 的切片时长为45s
+  - 主榜 part-2 和 part-3 的切片时长为25s
 - 导出视频
   1. 打开 AE
   1. 运行脚本
