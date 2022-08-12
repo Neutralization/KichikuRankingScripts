@@ -1,6 +1,6 @@
 import json
 import os
-
+import tkinter
 
 def debugger(text):
         print(text)
@@ -26,7 +26,7 @@ def play_kichiku(filein):
                                 continue
                 if i['offset'] == 0:
                         videodir = os.path.abspath(i['video'])
-                        #os.startfile(videodir)
+                        os.startfile(videodir)
                         temp_offset = input("请指定偏移值:")
                         j['offset'] = temp_offset
                         if j['offset'] == "":
@@ -54,4 +54,17 @@ def play_kichiku(filein):
         exit()
 
                 
-play_kichiku("./data.json")
+
+
+tkinter.messagebox.showinfo(title="Info", message="请选择文件")
+turget_files = tkinter.filedialog.askfilenames(initialdir=os.getcwd())
+if turget_files == '':
+        tkinter.messagebox.showerror(title="Error", message="未选择文件")
+        os._exit(0)
+else:
+        for single_file in turget_files:
+                play_kichiku(single_file)
+
+		
+
+
