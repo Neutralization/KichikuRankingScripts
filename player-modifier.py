@@ -52,6 +52,7 @@ def play_kichiku(filein):
         
 tkinter.messagebox.showinfo(title="Info", message="请选择文件")
 turget_files = tkinter.filedialog.askopenfilenames(initialdir=os.getcwd(),filetypes=[("json file", ".json")])
+os.chdir(os.path.dirname(os.path.abspath(turget_files)))
 if turget_files == '':
         tkinter.messagebox.showerror(title="Error", message="未选择文件")
         os._exit(0)
