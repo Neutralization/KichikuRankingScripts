@@ -1,24 +1,22 @@
 import json
 import os
-import tkinter
+import tkinter.messagebox
+from tkinter.filedialog import askopenfilenames
 
-def debugger(text):
-        print(text)
-        
 def play_kichiku(filein):
 
         filedir = os.path.abspath(filein)
         data = open(filedir,'r',encoding='utf-8')
-        print(data)
+        #print(data)
         kck_data = json.load(data)
         jsonoutput = []
-        print(kck_data)
+        #print(kck_data)
         for i in kck_data:
                 json_single = {}
                 j = json_single
                 for single_i in i:
-                        print(single_i)
-                        print(i[single_i])
+                        #print(single_i)
+                        #print(i[single_i])
                         if single_i == "offset":
                                 continue
                         else:
@@ -50,21 +48,13 @@ def play_kichiku(filein):
                 data.close
                 with open('data.json', 'w',encoding='utf-8') as out_file:
                         json.dump(jsonoutput, out_file, sort_keys = True, indent = 4,ensure_ascii = False)
-
-        exit()
-
-                
-
-
+        
 tkinter.messagebox.showinfo(title="Info", message="请选择文件")
-turget_files = tkinter.filedialog.askfilenames(initialdir=os.getcwd(),filetypes=[("json file", ".json")])
+turget_files = tkinter.filedialog.askopenfilenames(initialdir=os.getcwd(),filetypes=[("json file", ".json")])
 if turget_files == '':
         tkinter.messagebox.showerror(title="Error", message="未选择文件")
         os._exit(0)
 else:
         for single_file in turget_files:
                 play_kichiku(single_file)
-
-		
-
-
+        os._exit(0)
