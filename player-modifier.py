@@ -24,6 +24,7 @@ def play_kichiku(filein):
                                 continue
                 if i['offset'] == 0:
                         videodir = os.path.abspath(i['video'])
+                        print(i['video'])
                         os.startfile(videodir)
                         temp_offset = input("请指定偏移值:")
                         j['offset'] = temp_offset
