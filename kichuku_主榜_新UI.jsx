@@ -38,12 +38,12 @@ OffsetData = {};
 PointData = {};
 TrueRankData = {};
 for (key = 0; key < AllData.length; key++) {
-    rank = AllData[key]['rank'];
-    StaticResource[rank + '_V'] = AllData[key]['video'];
-    StaticResource[rank + '_T'] = AllData[key]['text'];
-    OffsetData[rank] = AllData[key]['offset'];
-    PointData[rank] = AllData[key]['delta'];
-    TrueRankData[rank] = AllData[key]['true_rank'];
+    rank = AllData[key].rank;
+    StaticResource[rank + '_V'] = AllData[key].video;
+    StaticResource[rank + '_T'] = AllData[key].text;
+    OffsetData[rank] = AllData[key].offset;
+    PointData[rank] = AllData[key].delta;
+    TrueRankData[rank] = AllData[key].true_rank;
 }
 
 for (key in StaticResource) {

@@ -23,10 +23,10 @@ AllData = JSON.parse(content);
 
 OffsetData = {};
 for (key = 0; key < AllData.length; key++) {
-    rank = AllData[key]['rank'];
-    StaticResource[rank + '_V'] = AllData[key]['video'];
-    StaticResource[rank + '_T'] = AllData[key]['text'];
-    OffsetData[rank] = AllData[key]['offset'];
+    rank = AllData[key].rank;
+    StaticResource[rank + '_V'] = AllData[key].video;
+    StaticResource[rank + '_T'] = AllData[key].text;
+    OffsetData[rank] = AllData[key].offset;
 }
 
 for (key in StaticResource) {
@@ -229,8 +229,8 @@ SingleLength = 25;
 LastRank = 0;
 
 for (key in AllData) {
-    if (AllData[key]['rank'] > LastRank) {
-        LastRank = AllData[key]['rank'];
+    if (AllData[key].rank > LastRank) {
+        LastRank = AllData[key].rank;
     }
 }
 Part1.duration = LastRank * SingleLength + LastRank + 4;

@@ -31,15 +31,15 @@ OffsetData = {};
 PointData = {};
 
 for (key = 0; key < FootageData.length; key++) {
-    RankList = FootageData[key]['type'];
-    Rank = FootageData[key]['rank'];
+    RankList = FootageData[key].type;
+    Rank = FootageData[key].rank;
     FileName = 'Rank_' + Rank;
-    FootageFile[RankList + FileName + '_Video'] = FootageData[key]['video'];
-    if (FootageData[key]['image'] != '') {
-        FootageFile[RankList + FileName + '_Image'] = FootageData[key]['image'];
+    FootageFile[RankList + FileName + '_Video'] = FootageData[key].video;
+    if (FootageData[key].image != '') {
+        FootageFile[RankList + FileName + '_Image'] = FootageData[key].image;
     }
-    OffsetData[RankList + Rank] = FootageData[key]['offset'];
-    PointData[RankList + Rank] = FootageData[key]['point'];
+    OffsetData[RankList + Rank] = FootageData[key].offset;
+    PointData[RankList + Rank] = FootageData[key].point;
 }
 
 Footage = app.project.items.addFolder('Footage');
@@ -752,7 +752,7 @@ Part5.duration = BlackLayer.outPoint = Globaloffset;
 // 副榜
 Globaloffset = 5;
 AddLayer(Part6, 'next_sub', 5, 0);
-app.project.items[ResourceID['mask_sub']].mainSource.loop = 35;
+app.project.items[ResourceID.mask_sub].mainSource.loop = 35;
 Bgm = AddLayer(Part6, '副榜Rank_0_Video', 5 * 35, Globaloffset - OffsetData['副榜0']);
 Bgm.inPoint = Globaloffset;
 Bgm.outPoint = Globaloffset + 5 * 35;
