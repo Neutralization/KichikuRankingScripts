@@ -194,7 +194,7 @@ def diffExcel(ranktype, num, file1, file2):
 
 def main():
     global excluded
-    ranktype = "周" if "w" in input("\n\t周刊(w) or 月刊(m)？\n") else "月"
+    ranktype = "月" if "m" in input("\n\t周刊(w) or 月刊(m)？\n") else "周"
     print(f"\n加载文件\n\t{abspath(f'{ranktype}刊除外.csv')}")
     excluded = [int(line.strip("\n")) for line in open(f"{ranktype}刊除外.csv", "r")]
     if ranktype == "周":
