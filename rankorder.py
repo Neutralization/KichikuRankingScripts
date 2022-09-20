@@ -67,7 +67,7 @@ async def getcover(aid):
 
 def downcover(rank, aid, link):
     try:
-        response = requests.get(link)
+        response = requests.get(f"{link}@640w_400h.jpg")
     except requests.exceptions.MissingSchema:
         print(f"{rank}_av{aid}.jpg 下载失败\n")
         return None
