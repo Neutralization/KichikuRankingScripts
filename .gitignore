@@ -1,7 +1,9 @@
 # 素材
 pic/
+模板/
 绿幕抠图/
 统计数据/
+新人自荐/
 经典推荐/
 旧稿推荐/
 冷门推荐/
@@ -11,6 +13,9 @@ pic/
 主榜20-11/
 副榜21-125/
 *期连续在榜/
+鬼畜剧场月刊/
+鬼畜月刊新人自荐/
+使用说明.png
 
 # 数据
 psdownload/download.txt
@@ -18,6 +23,8 @@ psdownload/download.txt
 *.xlsx
 *.csv
 *.tar.bz2
+*.txt
+*.ted
 
 # 编译
 *.exe
