@@ -39,9 +39,12 @@ def readexcel(filename, index):
     if index == 0:
         main = df.loc[df.index < 22, ["排名", "aid"]].iloc[::-1].values.tolist()
         main = [[x[0], f"av{x[-1]}"] for x in main]
-        main[-12] = [f"主榜{main[-11][0]}-{main[-5][0]}", ""]
-        main[-4] = [f"主榜{main[-3][0]}-{main[-1][0]}", ""]
-        main = [[f"主榜{main[-0][0]}-{main[-13][0]}", ""]] + main
+        # main[-12] = [f"主榜{main[-11][0]}-{main[-5][0]}", ""]
+        # main[-4] = [f"主榜{main[-3][0]}-{main[-1][0]}", ""]
+        # main = [[f"主榜{main[-0][0]}-{main[-13][0]}", ""]] + main
+        main = [["主榜", ""]] + main
+        del main[-12]
+        del main[-4]
         return main
     if index == 1:
         continuity = df[["排名", "aid"]].iloc[::-1].values.tolist()
@@ -50,22 +53,22 @@ def readexcel(filename, index):
         return continuity
     if index == 2:
         old = df[["AV号"]].values.tolist()
-        old = [[""] + x for x in old]
+        old = [[len(old) - n, x[0]] for n, x in enumerate(old)]
         old = [["旧稿回顾", ""]] + old
         return old
     if index == 3:
         suggest = df[["AV号"]].head(10).values.tolist()
-        suggest = [["", x[0].lower()] for x in suggest]
+        suggest = [[len(suggest) - n, x[0].lower()] for n, x in enumerate(suggest)]
         suggest = [["榜外推荐", ""]] + suggest
         return suggest
     if index == 4:
         classic = df[["AV号"]].tail(1).values.tolist()
-        classic = [["", x[0].lower()] for x in classic]
+        classic = [[len(classic) - n, x[0].lower()] for n, x in enumerate(classic)]
         classic = [["经典推荐", ""]] + classic
         return classic
     if index == 5:
         newbie = df[["AV号"]].values.tolist()
-        newbie = [["", x[0].lower()] for x in newbie]
+        newbie = [[len(newbie) - n, x[0].lower()] for n, x in enumerate(newbie)]
         newbie = [["经典推荐", ""]] + newbie
         return newbie
 
@@ -88,13 +91,11 @@ def main():
         + (readexcel(excellist[5], 5) if excellist[5] is not None else [])  # 新人自荐
         + readexcel(excellist[3], 3)  # 榜外推荐
         + readexcel(excellist[2], 2)  # 旧稿回顾
-        + [["ED", ""], ["", ""]]
+        + [["ED", ""], ["", "av"]]
         + readexcel(excellist[0], 0)  # 主榜
     )
     df = pd.DataFrame(ranklist)
-    df.to_excel(
-        f"{weeks:03d}期节目单.xlsx", index=False, header=False, encoding="utf-8-sig"
-    )
+    df.to_csv(f"{weeks:03d}期节目单.csv", index=False, header=False, encoding="utf-8-sig")
     input("\n\t现在可以退出...")
 
 
