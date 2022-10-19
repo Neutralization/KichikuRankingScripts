@@ -143,8 +143,8 @@ def diffExcel(ranktype, num, file1, file2):
 
     print("\n获取UP主昵称...")
     mids = set([int(new.at[x, "mid"]) for x in new[0:150].index])
-    nametasks = [asyncio.ensure_future(getusername(x)) for x in mids]
-    nameloop = asyncio.get_event_loop()
+    nameloop = asyncio.new_event_loop()
+    nametasks = [asyncio.ensure_future(getusername(x), loop=nameloop) for x in mids]
     usernames = nameloop.run_until_complete(asyncio.gather(*nametasks))
     usernames = reduce(lambda x, y: {**x, **y}, usernames)
     for x in new[0:150].index:
@@ -163,10 +163,11 @@ def diffExcel(ranktype, num, file1, file2):
     new = new.sort_index().reset_index(drop=True)
 
     print("\n获取视频封面...")
+    coverloop = asyncio.new_event_loop()
     covertasks = [
-        asyncio.ensure_future(getcover(int(new.at[x, "aid"]))) for x in new[0:125].index
+        asyncio.ensure_future(getcover(int(new.at[x, "aid"])), loop=coverloop)
+        for x in new[0:125].index
     ]
-    coverloop = asyncio.get_event_loop()
     covers = coverloop.run_until_complete(asyncio.gather(*covertasks))
     covers = reduce(lambda x, y: {**x, **y}, covers)
     list(
