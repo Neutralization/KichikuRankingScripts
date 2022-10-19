@@ -3,6 +3,7 @@
 import asyncio
 import json
 from functools import reduce
+from os import listdir, remove
 from os.path import abspath
 
 import aiohttp
@@ -163,6 +164,8 @@ def diffExcel(ranktype, num, file1, file2):
     new = new.sort_index().reset_index(drop=True)
 
     print("\n获取视频封面...")
+    for file in listdir("./pic/"):
+        remove(f"./pic/{file}")
     coverloop = asyncio.new_event_loop()
     covertasks = [
         asyncio.ensure_future(getcover(int(new.at[x, "aid"])), loop=coverloop)
