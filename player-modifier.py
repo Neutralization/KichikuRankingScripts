@@ -47,7 +47,7 @@ def play_kichiku(filein):
         matches = ["w", "W"]
         if any(x in kotae for x in matches):
                 data.close
-                with open('data.json', 'w',encoding='utf-8') as out_file:
+                with open(filesin + '.new', 'w',encoding='utf-8') as out_file:
                         json.dump(jsonoutput, out_file, sort_keys = True, indent = 4,ensure_ascii = False)
         
 tkinter.messagebox.showinfo(title="Info", message="请选择文件")
