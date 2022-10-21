@@ -25,6 +25,9 @@ psdownload/download.txt
 *.tar.bz2
 *.txt
 *.ted
+*.zip
+*.7z
 
 # 编译
 *.exe
+*.spec
