@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from json import dumps
-from os import listdir
-from os.path import abspath
+from os import rename, listdir
+from os.path import abspath, exists
 
 import arrow
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
 PAST = arrow.get("2021-11-08 00:00:00", "YYYY-MM-DD HH:mm:ss")
-NOW = arrow.now()
+NOW = arrow.now("Asia/Shanghai")
 weekday = int(NOW.format("d"))
 start_date = NOW.shift(days=-(weekday + 6)).format("YYYY-MM-DD")
 end_date = NOW.shift(days=-(weekday - 1)).format("YYYY-MM-DD")
@@ -59,41 +59,33 @@ def xlsx2json(filename, ranktype):
 
     with open("./psdownload/download.txt", "a", encoding="utf-8") as f:
         if ranktype == "主榜":
-            videos = [
-                x["aid"]
-                for x in xlsx_data[:20]
-                if isinstance(x["排名"], int)  # and x["排名"] <= 20
-            ]
+            videos = [x["aid"] for x in xlsx_data[:20] if isinstance(x["排名"], int)]
             list(map(lambda x: f.write(f"av{x}\n"), videos))
-        if ranktype == "旧稿":
-            videos = [x["AV号"] for x in xlsx_data]
-            list(map(lambda x: f.write(f"{x.lower()}\n"), videos))
-        if ranktype == "经典":
-            videos = [x["AV号"] for x in xlsx_data]
-            list(map(lambda x: f.write(f"{x.lower()}\n"), videos))
-        if ranktype == "连续":
+        elif ranktype == "连续":
             videos = [x["aid"] for x in xlsx_data]
             list(map(lambda x: f.write(f"av{x}\n"), videos))
+        elif ranktype in ("旧稿", "经典", "新人"):
+            videos = [x["AV号"] for x in xlsx_data]
+            list(map(lambda x: f.write(f"{x.lower()}\n"), videos))
+        else:
+            pass
+
     if ranktype == "主榜":
         point_data = {
-            x["排名"]: x["总分"]
-            for x in xlsx_data[:21]
-            if isinstance(x["排名"], int)  # and x["排名"] <= 21
+            x["排名"]: x["总分"] for x in xlsx_data[:21] if isinstance(x["排名"], int)
         }
-        # num_3 = len([x["排名"] for x in xlsx_data[:20] if x["排名"] <= 3])
-        # num_10 = len([x["排名"] for x in xlsx_data[:20] if x["排名"] <= 10])
         json_data = [
             {
                 "rank": n + 1,
                 "true_rank": f"第{an2cn(x['排名'])}名" if n + 1 <= 3 else x["排名"],
+                "type": "主榜",
                 "video": f"./主榜视频/av{x['aid']}.mp4",
-                # "text": f"./主榜{xlsx_data[2]['排名']}-1/Rank_{n+1}.png"
-                "text": f"./主榜3-1/Rank_{n+1}.png" if n + 1 <= 3
-                # else f"./主榜{xlsx_data[9]['排名']}-{xlsx_data[3]['排名']}/Rank_{n+1-3}.png"
-                else f"./主榜10-4/Rank_{n+1-3}.png" if 3 < n + 1 <= 10
-                # else f"./主榜{xlsx_data[19]['排名']}-{xlsx_data[10]['排名']}/Rank_{n+1-10}.png",
+                "image": f"./主榜3-1/Rank_{n+1}.png"
+                if n + 1 <= 3
+                else f"./主榜10-4/Rank_{n+1-3}.png"
+                if 3 < n + 1 <= 10
                 else f"./主榜20-11/Rank_{n+1-10}.png",
-                "delta": "+"
+                "point": "+"
                 + format(int(point_data[x["排名"]]) - int(point_data[x["排名"] + 1]), ",")
                 if point_data.get(x["排名"] + 1) and n + 1 <= 3
                 else "+000,000,000记得改数字！！"
@@ -102,60 +94,70 @@ def xlsx2json(filename, ranktype):
                 "offset": 0,
             }
             for n, x in enumerate(xlsx_data[:20])
-            # if x["排名"] <= 20
         ]
-        data = dumps(json_data, indent=4, ensure_ascii=False)
-        with open("data.json", "w", encoding="utf-8") as f:
-            f.write(data)
-    if ranktype == "旧稿":
+
+    elif ranktype == "连续":
         json_data = [
             {
                 "rank": n + 1,
-                "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
-                "text": f"./旧稿推荐/{n + 1}.png",
-                "offset": 0,
-            }
-            for n, x in enumerate(xlsx_data)
-        ]
-        data = dumps(json_data, indent=4, ensure_ascii=False)
-        with open("data_旧稿.json", "w", encoding="utf-8") as f:
-            f.write(data)
-    if ranktype == "经典":
-        json_data = [
-            {
-                "rank": n + 1,
-                "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
-                "text": f"./冷门推荐/{n + 1}.png",
-                "offset": 0,
-            }
-            for n, x in enumerate(xlsx_data)
-        ]
-        json_data[-1]["text"] = "./经典推荐/1.png"
-        json_data[-1]["rank"] = 0
-        data = dumps(json_data, indent=4, ensure_ascii=False)
-        with open("data_经典&冷门.json", "w", encoding="utf-8") as f:
-            f.write(data)
-    if ranktype == "连续":
-        json_data = [
-            {
-                "rank": n + 1,
+                "type": "连续",
                 "video": f"./主榜视频/av{x['aid']}.mp4",
-                "text": f"./{weeks:03d}期连续在榜/Rank_{n + 1}.png",
+                "image": f"./{weeks:03d}期连续在榜/Rank_{n + 1}.png",
                 "offset": 0,
             }
             for n, x in enumerate(xlsx_data)
         ]
-        data = dumps(json_data, indent=4, ensure_ascii=False)
-        with open("data_连续.json", "w", encoding="utf-8") as f:
-            f.write(data)
+
+    elif ranktype == "旧稿":
+        json_data = [
+            {
+                "rank": n + 1,
+                "type": "旧稿",
+                "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
+                "image": f"./旧稿推荐/{n + 1}.png",
+                "offset": 0,
+            }
+            for n, x in enumerate(xlsx_data)
+        ]
+
+    elif ranktype == "经典":
+        json_data = [
+            {
+                "rank": n + 1,
+                "type": "榜外",
+                "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
+                "image": f"./冷门推荐/{n + 1}.png",
+                "offset": 0,
+            }
+            for n, x in enumerate(xlsx_data)
+        ]
+        json_data[-1]["image"] = "./经典推荐/1.png"
+        json_data[-1]["rank"] = 0
+        json_data[-1]["type"] = "经典"
+
+    elif ranktype == "新人":
+        json_data = [
+            {
+                "rank": n + 1,
+                "type": "新人",
+                "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
+                "text": f"./新人自荐/{n + 1}.png",
+                "offset": 0,
+            }
+            for n, x in enumerate(xlsx_data)
+        ]
+
+    else:
+        json_data = []
+    return json_data
 
 
 def main():
     print(f"\n\t现在是 {NOW.format('YYYY-MM-DD HH:MM:SS')}，本周应该是周刊第{an2cn(weeks)}期")
     print(f"\n\t将会查找文件名包含“主榜”“{weeks}”的Excel文件")
-    print(f"\n\t将会查找文件名包含“连续在榜”“{weeks}”的Excel文件")
-    print(f"\n\t将会查找文件名包含“旧稿回顾”“{an2cn(weeks)}”的Excel文件")
-    print(f"\n\t将会查找文件名包含“经典回顾”“{an2cn(weeks)}”的Excel文件")
+    print(f"\t将会查找文件名包含“连续在榜”“{weeks}”的Excel文件")
+    print(f"\t将会查找文件名包含“旧稿回顾”“{an2cn(weeks)}”的Excel文件")
+    print(f"\t将会查找文件名包含“经典回顾”“{an2cn(weeks)}”的Excel文件")
 
     input("\n\t回车继续执行...")
 
@@ -163,27 +165,35 @@ def main():
         f.write("")
 
     main_excel = find(f"{weeks:03d}", "主榜")
-    if main_excel is not None:
-        xlsx2json(main_excel, "主榜")
-        print("\tAE脚本数据“data.json”已经生成")
-
     continuity_excel = find(f"{weeks:03d}", "连续在榜")
-    if continuity_excel is not None:
-        xlsx2json(continuity_excel, "连续")
-        print("\tAE脚本数据“data_连续.json”已经生成")
-
     old_excel = find(an2cn(weeks), "旧稿回顾")
-    if old_excel is not None:
-        xlsx2json(old_excel, "旧稿")
-        print("\tAE脚本数据“data_旧稿.json”已经生成")
-
     classic_excel = find(an2cn(weeks), "经典回顾")
-    if classic_excel is not None:
-        xlsx2json(classic_excel, "经典")
-        print("\tAE脚本数据“data_经典&冷门.json”已经生成")
+    newbie_excel = find(an2cn(weeks), "新人自荐")
+    json_data = []
 
+    if main_excel is not None:
+        json_data += xlsx2json(main_excel, "主榜")
+        print("\t主榜已经生成")
+    if continuity_excel is not None:
+        json_data += xlsx2json(continuity_excel, "连续")
+        print("\t连续在榜已经生成")
+    if old_excel is not None:
+        json_data += xlsx2json(old_excel, "旧稿")
+        print("\t旧稿回顾已经生成")
+    if classic_excel is not None:
+        json_data += xlsx2json(classic_excel, "经典")
+        print("\t经典回顾已经生成")
+    if newbie_excel is not None:
+        json_data += xlsx2json(newbie_excel, "新人")
+        print("\t新人自荐已经生成")
+    if exists("周刊数据.json"):
+        now = arrow.now("Asia/Shanghai").format("YYYY-MM-DD HH-mm-ss")
+        rename("周刊数据.json", f"周刊数据_备份_{now}.json")
+    with open("周刊数据.json", "w", encoding="utf-8") as f:
+        f.write(dumps(json_data, indent=4, ensure_ascii=False))
+    print("\n\tAE脚本数据“周刊数据.json”已经生成")
     print(f"\n\t视频下载列表已保存至“{abspath('./psdownload/download.txt')}”")
-    input("\t现在可以关闭本程序")
+    input("\n\t可以正常退出...\n\t")
 
 
 if __name__ == "__main__":
