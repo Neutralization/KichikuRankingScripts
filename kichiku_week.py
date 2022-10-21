@@ -169,7 +169,16 @@ def main():
     old_excel = find(an2cn(weeks), "旧稿回顾")
     classic_excel = find(an2cn(weeks), "经典回顾")
     newbie_excel = find(an2cn(weeks), "新人自荐")
-    json_data = []
+    json_data = [
+        {
+            "rank": 0,
+            "type": "副榜",
+            "video": "./主榜视频/av29843341.mp4",
+            "image": "",
+            "point": "",
+            "offset": 0,
+        },
+    ]
 
     if main_excel is not None:
         json_data += xlsx2json(main_excel, "主榜")
