@@ -11,13 +11,13 @@ RankVideoSize = [1352, 760];
 NewVideoSize = [1306, 734];
 CompFPS = 60;
 
-Part_Classic = app.project.items.addComp('经典推荐', 1920, 1080, 1, 30, 60);
-Part_Continuity = app.project.items.addComp('连续在榜', 1920, 1080, 1, 1, 60);
+Part_Classic = app.project.items.addComp('经典推荐', 1920, 1080, 1, 30, CompFPS);
+Part_Continuity = app.project.items.addComp('连续在榜', 1920, 1080, 1, 1, CompFPS);
 Part_Main20 = app.project.items.addComp('主榜20-11', 1920, 1080, 1, 5, CompFPS);
 Part_Newbie = app.project.items.addComp('新人自荐', 1920, 1080, 1, 5, CompFPS);
 Part_Suggest = app.project.items.addComp('榜外推荐', 1920, 1080, 1, 5, CompFPS);
 Part_Main10 = app.project.items.addComp('主榜10-4', 1920, 1080, 1, 5, CompFPS);
-Part_Old = app.project.items.addComp('旧稿回顾', 1920, 1080, 1, 25, 60);
+Part_Old = app.project.items.addComp('旧稿回顾', 1920, 1080, 1, 25, CompFPS);
 Part_Main3 = app.project.items.addComp('主榜3-1', 1920, 1080, 1, 5, CompFPS);
 Part_Extra = app.project.items.addComp('副榜', 1920, 1080, 1, 5 * 36, CompFPS);
 Final = app.project.items.addComp('哔哩哔哩鬼畜周刊排行榜#' + ('000' + WEEK_NUM).slice(-3), 1920, 1080, 1, 34, CompFPS); //OP
@@ -369,13 +369,13 @@ P1 = [0, 0];
 P2 = [c1 * t_fps, 0];
 P3 = [c2 * t_fps, dest];
 P4 = [t_fps, dest];
-for (x = 0; x <= t_fps; x += 1) {
-    y = BezierCurve(P1, P2, P3, P4, x);
-    RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + x / 60, [dest_y1 + y, dest_y1 + y]);
+for (t = 0; t <= t_fps; t += 1) {
+    y = BezierCurve(P1, P2, P3, P4, t);
+    RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + t / CompFPS, [dest_y1 + y, dest_y1 + y]);
 }
-for (x = t_fps; x >= 0; x -= 1) {
-    y = BezierCurve(P1, P2, P3, P4, x);
-    RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - x) / 60, [
+for (t = t_fps; t >= 0; t -= 1) {
+    y = BezierCurve(P1, P2, P3, P4, t);
+    RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - t) / CompFPS, [
         dest_y1 + y,
         dest_y1 + y,
     ]);
@@ -446,13 +446,13 @@ for (rank = LastRank; rank >= 1; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + x / 60, [dest_y1 + y, dest_y1 + y]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + t / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
-    for (x = t_fps; x >= 0; x -= 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - x) / 60, [
+    for (t = t_fps; t >= 0; t -= 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - t) / CompFPS, [
             dest_y1 + y,
             dest_y1 + y,
         ]);
@@ -525,13 +525,13 @@ PP1 = [0, dest];
 PP2 = [c1 * t_fps, dest];
 PP3 = [c2 * t_fps, 0];
 PP4 = [t_fps, 0];
-for (x = 0; x <= t_fps; x += 1) {
-    y = BezierCurve(P1, P2, P3, P4, x);
-    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 18) / 60, [dest_y1 + y, 681.8]);
+for (t = 0; t <= t_fps; t += 1) {
+    y = BezierCurve(P1, P2, P3, P4, t);
+    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (t + 18) / CompFPS, [dest_y1 + y, 681.8]);
 }
-for (x = 0; x <= t_fps; x += 1) {
-    yy = BezierCurve(PP1, PP2, PP3, PP4, x);
-    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 214) / 60, [dest_y1 + yy, 681.8]);
+for (t = 0; t <= t_fps; t += 1) {
+    yy = BezierCurve(PP1, PP2, PP3, PP4, t);
+    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (t + 214) / CompFPS, [dest_y1 + yy, 681.8]);
 }
 
 
@@ -651,13 +651,13 @@ for (rank = LastRank; rank >= 1; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + x / 60, [dest_y1 + y, dest_y1 + y]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + t / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
-    for (x = t_fps; x >= 0; x -= 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - x) / 60, [
+    for (t = t_fps; t >= 0; t -= 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        RankVideoLayer.property('Audio Levels').setValueAtTime(Globaloffset + SingleLength - 2 + (t_fps - t) / CompFPS, [
             dest_y1 + y,
             dest_y1 + y,
         ]);
@@ -786,9 +786,9 @@ P1 = [0, 0];
 P2 = [c1 * t_fps, 0];
 P3 = [c2 * t_fps, dest];
 P4 = [t_fps, dest];
-for (x = 0; x <= t_fps; x += 1) {
-    y = BezierCurve(P1, P2, P3, P4, x);
-    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 18) / 60, [dest_y1 + y, 681.8]);
+for (t = 0; t <= t_fps; t += 1) {
+    y = BezierCurve(P1, P2, P3, P4, t);
+    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (t + 18) / CompFPS, [dest_y1 + y, 681.8]);
 }
 c1 = 1;
 c2 = 7 / 67;
@@ -796,9 +796,9 @@ P1 = [0, dest];
 P2 = [c1 * t_fps, dest];
 P3 = [c2 * t_fps, 0];
 P4 = [t_fps, 0];
-for (x = 0; x <= t_fps; x += 1) {
-    y = BezierCurve(P1, P2, P3, P4, x);
-    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 214) / 60, [dest_y1 + y, 681.8]);
+for (t = 0; t <= t_fps; t += 1) {
+    y = BezierCurve(P1, P2, P3, P4, t);
+    RankTextLayer.property('Position').setValueAtTime(Globaloffset + (t + 214) / CompFPS, [dest_y1 + y, 681.8]);
 }
 RankMaskLayer = Part_Main10.layers.addSolid(hexToRgb('000000'), 'Rank', 893, 128, 1, 5);
 RankMaskLayer.startTime = Globaloffset;
@@ -876,8 +876,8 @@ Part_Old.duration = LastRank * SingleLength + LastRank + 4;
 // BlackLayer.outPoint = Part_Old.duration;
 ChangeLayer = AddLayer(Part_Old, 'next_old', 5, 0);
 ChangeLayer.timeRemapEnabled = true;
-ChangeLayer.property('ADBE Time Remapping').setValueAtTime(4 + 59 / 60, 4 + 59 / 60);
-ChangeLayer.property('ADBE Time Remapping').setValueAtTime(9 + 59 / 60, 4 + 59 / 60);
+ChangeLayer.property('ADBE Time Remapping').setValueAtTime(4 + (CompFPS - 1) / CompFPS, 4 + (CompFPS - 1) / CompFPS);
+ChangeLayer.property('ADBE Time Remapping').setValueAtTime(9 + (CompFPS - 1) / CompFPS, 4 + (CompFPS - 1) / CompFPS);
 ChangeLayer.outPoint = Part_Old.duration;
 Globaloffset += 5;
 
@@ -917,13 +917,13 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property('Audio Levels').setValueAtTime(x / 60, [dest_y1 + y, dest_y1 + y]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        RankVideoLayer.property('Audio Levels').setValueAtTime(t / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
-    for (x = t_fps; x >= 0; x -= 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        RankVideoLayer.property('Audio Levels').setValueAtTime(SingleLength - 2 + (t_fps - x) / 60, [
+    for (t = t_fps; t >= 0; t -= 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        RankVideoLayer.property('Audio Levels').setValueAtTime(SingleLength - 2 + (t_fps - t) / CompFPS, [
             dest_y1 + y,
             dest_y1 + y,
         ]);
@@ -991,10 +991,10 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        BottomLeft.property('Scale').setValueAtTime((x + 38 + 100) / 60, [dest_y1 + y, dest_y1 + y]);
-        BottomLeft2.property('Scale').setValueAtTime((x + 38 + 100) / 60, [dest_y1 + y, dest_y1 + y]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        BottomLeft.property('Scale').setValueAtTime((t + 38 + 100) / CompFPS, [dest_y1 + y, dest_y1 + y]);
+        BottomLeft2.property('Scale').setValueAtTime((t + 38 + 100) / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
     t_fps = 45;
     dest_y1 = 100;
@@ -1006,10 +1006,10 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        BottomLeft.property('Scale').setValueAtTime((x + 1430) / 60, [dest_y1 + y, dest_y1 + y]);
-        BottomLeft2.property('Scale').setValueAtTime((x + 1430) / 60, [dest_y1 + y, dest_y1 + y]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        BottomLeft.property('Scale').setValueAtTime((t + 1430) / CompFPS, [dest_y1 + y, dest_y1 + y]);
+        BottomLeft2.property('Scale').setValueAtTime((t + 1430) / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
 
     TopLeft = PreComp.layers.addShape();
@@ -1038,7 +1038,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
         x = BezierCurve(P1, P2, P3, P4, t);
         y = BezierCurve(P1, P2, P5, P6, t);
         TopShape.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Size')
-            .setValueAtTime((t + 27 + 100) / 60, [dest_x1 + x, dest_y1 + y]);
+            .setValueAtTime((t + 27 + 100) / CompFPS, [dest_x1 + x, dest_y1 + y]);
     }
     t_fps = 45;
     dest_x1 = 279;
@@ -1059,7 +1059,7 @@ for (rank = 1; rank <= LastRank; rank += 1) {
         x = BezierCurve(P1, P2, P3, P4, t);
         y = BezierCurve(P1, P2, P5, P6, t);
         TopShape.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Size')
-            .setValueAtTime((t + 1422) / 60, [dest_x1 + x, dest_y1 + y]);
+            .setValueAtTime((t + 1422) / CompFPS, [dest_x1 + x, dest_y1 + y]);
     }
     TopShape.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
     // TopShape.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Position').setValue([-78, -177]);
@@ -1095,9 +1095,9 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        TopRight.property('Position').setValueAtTime((x + 100) / 60, [dest_y1 + y, 95]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        TopRight.property('Position').setValueAtTime((t + 100) / CompFPS, [dest_y1 + y, 95]);
     }
     t_fps = 66;
     dest_y1 = 1184;
@@ -1109,9 +1109,9 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        TopRight.property('Position').setValueAtTime((x + 1400) / 60, [dest_y1 + y, 95]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        TopRight.property('Position').setValueAtTime((t + 1400) / CompFPS, [dest_y1 + y, 95]);
     }
     TopRight.property('Opacity').setValueAtTime(0 + 2, 0);
     TopRight.property('Opacity').setValueAtTime(1.5 + 2, 100);
@@ -1141,9 +1141,9 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        TLayer.property('Position').setValueAtTime((x + 11 + 100) / 60, [dest_y1 + y, 988]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        TLayer.property('Position').setValueAtTime((t + 11 + 100) / CompFPS, [dest_y1 + y, 988]);
     }
     t_fps = 66;
     dest_y1 = 1724 - 152;
@@ -1155,9 +1155,9 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        TLayer.property('Position').setValueAtTime((x + 1400) / 60, [dest_y1 + y, 988]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        TLayer.property('Position').setValueAtTime((t + 1400) / CompFPS, [dest_y1 + y, 988]);
     }
     BottomRight.parent = TLayer;
     Shadow = TLayer.property('Effects').addProperty('ADBE Drop Shadow');
@@ -1191,9 +1191,9 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        Wipe.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset + x / 60, 100 - y);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        Wipe.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset + t / CompFPS, 100 - y);
     }
 
     t_fps = CompFPS;
@@ -1206,9 +1206,9 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        PreRankLayer.property('Scale').setValueAtTime(Globaloffset + 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        PreRankLayer.property('Scale').setValueAtTime(Globaloffset + 1 + t / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
     t_fps = CompFPS / 3;
     c1 = 0;
@@ -1217,10 +1217,10 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         PreRankLayer.property('Scale')
-            .setValueAtTime(Globaloffset + SingleLength - 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+            .setValueAtTime(Globaloffset + SingleLength - 1 + t / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
     t_fps = CompFPS / 2;
     dest_y1 = 540;
@@ -1232,10 +1232,10 @@ for (rank = 1; rank <= LastRank; rank += 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         PreRankLayer.property('Position')
-            .setValueAtTime(Globaloffset + SingleLength - 0.5 + (x - 1) / 60, [960, dest_y1 + y]);
+            .setValueAtTime(Globaloffset + SingleLength - 0.5 + (t - 1) / CompFPS, [960, dest_y1 + y]);
     }
 
     if (rank == LastRank) {
@@ -1244,8 +1244,8 @@ for (rank = 1; rank <= LastRank; rank += 1) {
         addNext = 1;
         NextLayer = AddLayer(Part_Old, 'next', 1, Globaloffset + SingleLength);
         // NextLayer.timeRemapEnabled = true
-        // NextLayer.property("ADBE Time Remapping").setValueAtTime(59 / 60, 59 / 60)
-        // NextLayer.property("ADBE Time Remapping").setValueAtTime(1 + 59 / 60, 59 / 60)
+        // NextLayer.property("ADBE Time Remapping").setValueAtTime(59 / CompFPS, 59 / CompFPS)
+        // NextLayer.property("ADBE Time Remapping").setValueAtTime(1 + 59 / CompFPS, 59 / CompFPS)
         // NextLayer.outPoint = Globaloffset + SingleLength * 2 + 1
     }
     Globaloffset += SingleLength + addNext;
@@ -1268,8 +1268,8 @@ for (rank = 3; rank > 0; rank -= 1) {
     }
     NextLayer = AddLayer(Part_Main3, 'next_3', 5, Globaloffset);
     NextLayer.timeRemapEnabled = true;
-    NextLayer.property('ADBE Time Remapping').setValueAtTime(4 + 59 / 60, 4 + 59 / 60);
-    NextLayer.property('ADBE Time Remapping').setValueAtTime(9 + 59 / 60, 4 + 59 / 60);
+    NextLayer.property('ADBE Time Remapping').setValueAtTime(4 + (CompFPS - 1) / CompFPS, 4 + (CompFPS - 1) / CompFPS);
+    NextLayer.property('ADBE Time Remapping').setValueAtTime(9 + (CompFPS - 1) / CompFPS, 4 + (CompFPS - 1) / CompFPS);
     NextLayer.outPoint = Globaloffset + 5 + VideoDuration;
     PointTextLayer = Part_Main3.layers.addText(PointData['主榜' + rank] + ' POINTS');
     PointTextLayer.startTime = Globaloffset;
@@ -1298,18 +1298,18 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        PointTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 44) / 60, [dest_y1 + y, 749]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        PointTextLayer.property('Position').setValueAtTime(Globaloffset + (t + 44) / CompFPS, [dest_y1 + y, 749]);
     }
 
     P1 = [0, dest];
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        PointTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 199) / 60, [dest_y1 + y, 749]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        PointTextLayer.property('Position').setValueAtTime(Globaloffset + (t + 199) / CompFPS, [dest_y1 + y, 749]);
     }
 
     PointMaskLayer = Part_Main3.layers.addSolid(hexToRgb('000000'), 'Points', 556, 49, 1, 5);
@@ -1344,9 +1344,9 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 18) / 60, [dest_y1 + y, 681.8]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        RankTextLayer.property('Position').setValueAtTime(Globaloffset + (t + 18) / CompFPS, [dest_y1 + y, 681.8]);
     }
     c1 = 1;
     c2 = 7 / 67;
@@ -1354,9 +1354,9 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        RankTextLayer.property('Position').setValueAtTime(Globaloffset + (x + 214) / 60, [dest_y1 + y, 681.8]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        RankTextLayer.property('Position').setValueAtTime(Globaloffset + (t + 214) / CompFPS, [dest_y1 + y, 681.8]);
     }
     RankMaskLayer = Part_Main3.layers.addSolid(hexToRgb('000000'), 'Rank', 893, 128, 1, 5);
     RankMaskLayer.startTime = Globaloffset;
@@ -1411,11 +1411,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         BottomVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 45]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1423,11 +1423,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         BottomVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 45]);
     }
     BottomVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
     BottomVector.property('ADBE Vector Graphic - G-Fill').property('ADBE Vector Grad Start Pt').setValue([-306, 67]);
@@ -1453,11 +1453,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         BottomVector2.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 45]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1465,11 +1465,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         BottomVector2.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 45]);
     }
     BottomVector2.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
     BottomVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
@@ -1503,11 +1503,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         TopVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 72]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 72]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1515,11 +1515,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         TopVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 72]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 72]);
     }
     TopVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
     TopVector.property('ADBE Vector Graphic - G-Fill').property('ADBE Vector Grad Start Pt').setValue([-306, 67]);
@@ -1566,11 +1566,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         DataVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 45]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1578,11 +1578,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         DataVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 45]);
     }
     DataVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(19);
     DataVector.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color')
@@ -1609,11 +1609,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         DataVector2.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 45]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1621,11 +1621,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         DataVector2.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 45]);
     }
     DataVector2.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(19);
     DataVector2.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color')
@@ -1653,11 +1653,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         DataCircleVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 45]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1665,11 +1665,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         DataCircleVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 45]);
     }
     DataCircleVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(19);
     DataCircleVector.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
@@ -1693,11 +1693,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         DataCircleVector2.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 45]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1705,11 +1705,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         DataCircleVector2.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 45]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 45]);
     }
     DataCircleVector2.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(19);
     DataCircleVector2.property('ADBE Vector Filter - Repeater').property('ADBE Vector Repeater Copies').setValue(4);
@@ -1754,11 +1754,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         ScoreVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 117]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 117]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1766,11 +1766,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         ScoreVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 117]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 117]);
     }
     ScoreVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
     ScoreVector.property('ADBE Vector Graphic - Fill').property('ADBE Vector Fill Color').setValue([1, 1, 1, 1]);
@@ -1793,11 +1793,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         ScoreCircleVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(x / 60, [dest_y1 + y, 117]);
+            .setValueAtTime(t / CompFPS, [dest_y1 + y, 117]);
     }
     c1 = 1;
     c2 = 2 / 3;
@@ -1805,11 +1805,11 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         ScoreCircleVector.property('ADBE Vector Shape - Rect')
             .property('ADBE Vector Rect Size')
-            .setValueAtTime(10 - 1 + x / 60, [dest_y1 + y, 117]);
+            .setValueAtTime(10 - 1 + t / CompFPS, [dest_y1 + y, 117]);
     }
     ScoreCircleVector.property('ADBE Vector Shape - Rect').property('ADBE Vector Rect Roundness').setValue(20);
     ScoreCircleVector.property('ADBE Vector Graphic - Stroke').property('ADBE Vector Stroke Width').setValue(1);
@@ -1898,9 +1898,9 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        Wipe.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset + x / 60, 100 - y);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        Wipe.property('ADBE Linear Wipe-0001').setValueAtTime(Globaloffset + t / CompFPS, 100 - y);
     }
 
     t_fps = CompFPS;
@@ -1913,9 +1913,9 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
-        PreRankLayer.property('Scale').setValueAtTime(Globaloffset + 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
+        PreRankLayer.property('Scale').setValueAtTime(Globaloffset + 1 + t / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
     t_fps = CompFPS / 3;
     c1 = 0;
@@ -1924,10 +1924,10 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, dest];
     P3 = [c2 * t_fps, 0];
     P4 = [t_fps, 0];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         PreRankLayer.property('Scale')
-            .setValueAtTime(Globaloffset + VideoDuration - 1 + x / 60, [dest_y1 + y, dest_y1 + y]);
+            .setValueAtTime(Globaloffset + VideoDuration - 1 + t / CompFPS, [dest_y1 + y, dest_y1 + y]);
     }
     t_fps = CompFPS / 2;
     dest_y1 = 540;
@@ -1939,10 +1939,10 @@ for (rank = 3; rank > 0; rank -= 1) {
     P2 = [c1 * t_fps, 0];
     P3 = [c2 * t_fps, dest];
     P4 = [t_fps, dest];
-    for (x = 0; x <= t_fps; x += 1) {
-        y = BezierCurve(P1, P2, P3, P4, x);
+    for (t = 0; t <= t_fps; t += 1) {
+        y = BezierCurve(P1, P2, P3, P4, t);
         PreRankLayer.property('Position')
-            .setValueAtTime(Globaloffset + VideoDuration - 0.5 + (x - 1) / 60, [960, dest_y1 + y]);
+            .setValueAtTime(Globaloffset + VideoDuration - 0.5 + (t - 1) / CompFPS, [960, dest_y1 + y]);
     }
     TrueDuration += VideoDuration + 5;
     Globaloffset += VideoDuration;
