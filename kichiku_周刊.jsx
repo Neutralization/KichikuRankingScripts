@@ -1,7 +1,7 @@
 // @include "json2/json2.js"
 
-// WEEK_NUM = Math.floor((Date.now() / 1000 - 1635609600) / 3600 / 24 / 7);
-WEEK_NUM = 52;
+WEEK_NUM = Math.floor((Date.now() / 1000 - 1635609600) / 3600 / 24 / 7);
+
 app.project.close(CloseOptions.PROMPT_TO_SAVE_CHANGES);
 app.newProject();
 
