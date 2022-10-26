@@ -1,7 +1,7 @@
 // @include "json2/json2.js"
 
-WEEK_NUM = Math.floor((Date.now() / 1000 - 1635609600) / 3600 / 24 / 7);
-
+// WEEK_NUM = Math.floor((Date.now() / 1000 - 1635609600) / 3600 / 24 / 7);
+WEEK_NUM = 52;
 app.project.close(CloseOptions.PROMPT_TO_SAVE_CHANGES);
 app.newProject();
 
@@ -11,6 +11,7 @@ RankVideoSize = [1352, 760];
 NewVideoSize = [1306, 734];
 CompFPS = 60;
 
+Part_Opening = app.project.items.addComp('Opening', 1920, 1080, 1, 35, CompFPS);
 Part_Classic = app.project.items.addComp('经典推荐', 1920, 1080, 1, 30, CompFPS);
 Part_Continuity = app.project.items.addComp('连续在榜', 1920, 1080, 1, 1, CompFPS);
 Part_Main20 = app.project.items.addComp('主榜20-11', 1920, 1080, 1, 5, CompFPS);
@@ -20,7 +21,7 @@ Part_Main10 = app.project.items.addComp('主榜10-4', 1920, 1080, 1, 5, CompFPS)
 Part_Old = app.project.items.addComp('旧稿回顾', 1920, 1080, 1, 25, CompFPS);
 Part_Main3 = app.project.items.addComp('主榜3-1', 1920, 1080, 1, 5, CompFPS);
 Part_Extra = app.project.items.addComp('副榜', 1920, 1080, 1, 5 * 36, CompFPS);
-Final = app.project.items.addComp('哔哩哔哩鬼畜周刊排行榜#' + ('000' + WEEK_NUM).slice(-3), 1920, 1080, 1, 34, CompFPS); //OP
+Final = app.project.items.addComp('哔哩哔哩鬼畜周刊排行榜#' + ('000' + WEEK_NUM).slice(-3), 1920, 1080, 1, 1, CompFPS); //OP
 
 // LOAD DATA
 jsondata = new File('周刊数据.json');
@@ -59,8 +60,12 @@ for (key in FootageFile) {
     }
 }
 
+op2 = ['蓝.mp4','粉.mp4','绿.mp4','橙.mp4'];
+
 Template = app.project.items.addFolder('Template');
 TemplateFile = {
+    opening_1: './绿幕抠图/!OP.mp4',
+    opening_2: './绿幕抠图/' + op2[WEEK_NUM % 4],
     mask_classic: './绿幕抠图/!经典推荐2.mp4',
     mask_continuity: './绿幕抠图/!连续在榜.mp4',
     mask_newbie: './绿幕抠图/!新人自荐.mp4',
@@ -1978,7 +1983,101 @@ for (n = 1; n <= 35; n += 1) {
 Part_Extra.openInViewer();
 
 
+ResourceFile = new ImportOptions(File('./ED.aep'));
+ResourceFile.ImportAs = ImportAsType.FOOTAGE;
+FileItem = app.project.importFile(ResourceFile);
+
 ReCountResource();
+
+
+// OP
+AddLayer(Part_Opening, 'opening_1', app.project.items[ResourceID.opening_1].duration, 0);
+Part_Opening.duration = app.project.items[ResourceID.opening_1].duration;
+AddLayer(Part_Opening, 'opening_2', app.project.items[ResourceID.opening_2].duration, Part_Opening.duration);
+Part_Opening.duration += app.project.items[ResourceID.opening_2].duration;
+WeekTextComp = app.project.items.addComp('WeekTextLayer', 1920, 1080, 1, 10, CompFPS);
+WeekRangeComp = app.project.items.addComp('WeekRangeLayer', 1920, 1080, 1, 10, CompFPS);
+ReCountResource();
+Globaloffset = app.project.items[ResourceID.opening_1].duration;
+WeekLayer = WeekTextComp.layers.addText(('000' + WEEK_NUM).slice(-3));
+WeekDocument = WeekLayer.property('Source Text').value;
+WeekDocument.resetCharStyle();
+WeekDocument.resetParagraphStyle();
+WeekDocument.justification = ParagraphJustification.CENTER_JUSTIFY;
+WeekDocument.applyFill = true;
+WeekDocument.applyStroke = false;
+WeekLayer.property('Source Text').setValue(WeekDocument);
+WeekLayer.property('Source Text').expression =
+    'text.sourceText.createStyle().setText("' +
+    ('000' + WEEK_NUM).slice(-3) +
+    '").setFont("Roboto-Light")' +
+    '.setFillColor(hexToRgb("333333")).setFontSize(100);';
+WeekLayer.property('Source Text').expression.enabled = true;
+WeekLayer.property('Position').setValue([967.9, 575.5]);
+WeekTextLayer = AddLayer(Part_Opening, 'WeekTextLayer', app.project.items[ResourceID.opening_2].duration, Globaloffset + 7.5);
+WeekTextLayer.property('Opacity').setValueAtTime(WeekTextLayer.startTime + 4 + 3 / 5, 100);
+WeekTextLayer.property('Opacity').setValueAtTime(WeekTextLayer.startTime + 4 + 5 / 6, 0);
+WeekTextLayer.property('Scale').setValue([0, 0]);
+t_fps = 74;
+dest_y1 = 540;
+dest_y2 = 470;
+dest = dest_y2 - dest_y1;
+c1 = 10 / 74;
+c2 = 0;
+P1 = [0, 0];
+P2 = [c1 * t_fps, 0];
+P3 = [c2 * t_fps, dest];
+P4 = [t_fps, dest];
+for (t = 0; t <= t_fps; t += 1) {
+    y = BezierCurve(P1, P2, P3, P4, t);
+    WeekTextLayer.property('Position').setValueAtTime(WeekTextLayer.startTime + (t + 100) / CompFPS, [960, dest_y1 + y]);
+}
+t_fps = 38;
+dest_y1 = 0;
+dest_y2 = 100;
+dest = dest_y2 - dest_y1;
+c1 = 30 / 38;
+c2 = 0;
+P1 = [0, 0];
+P2 = [c1 * t_fps, 0];
+P3 = [c2 * t_fps, dest];
+P4 = [t_fps, dest];
+for (t = 0; t <= t_fps; t += 1) {
+    y = BezierCurve(P1, P2, P3, P4, t);
+    WeekTextLayer.property('Scale').setValueAtTime(WeekTextLayer.startTime + (t + 41) / CompFPS, [dest_y1 + y, dest_y1 + y]);
+}
+
+
+today = new Date();
+sdate = new Date(Date.now() - (today.getDay() + 6) * 24 * 3600 * 1000);
+start = ('00' + (sdate.getMonth() + 1)).slice(-2) + '.' + ('00' + sdate.getDate()).slice(-2);
+edate = new Date(Date.now() - (today.getDay() + 0) * 24 * 3600 * 1000);
+end = ('00' + (edate.getMonth() + 1)).slice(-2) + '.' + ('00' + edate.getDate()).slice(-2);
+
+RangeLayer = WeekRangeComp.layers.addText(start + '-' + end);
+RangeDocument = RangeLayer.property('Source Text').value;
+RangeDocument.resetCharStyle();
+RangeDocument.resetParagraphStyle();
+RangeDocument.justification = ParagraphJustification.CENTER_JUSTIFY;
+RangeDocument.applyFill = true;
+RangeDocument.applyStroke = false;
+RangeLayer.property('Source Text').setValue(RangeDocument);
+RangeLayer.property('Source Text').expression =
+    'text.sourceText.createStyle().setText("' +
+    (start + '-' + end) +
+    '").setFont("HarmonyOS_Sans_SC")' +
+    '.setFillColor(hexToRgb("333333")).setFontSize(45);';
+RangeLayer.property('Source Text').expression.enabled = true;
+RangeLayer.property('Position').setValue([959, 556.5]);
+WeekRangeLayer = AddLayer(Part_Opening, 'WeekRangeLayer', app.project.items[ResourceID.opening_2].duration, 0);
+WeekRangeLayer.applyPreset(new File('./OPTEXT.ffx'));
+WeekRangeLayer.startTime = Globaloffset + 10.1;
+Part_Opening.openInViewer();
+
+
+AddLayer(Final, 'Opening', Part_Opening.duration, 0);
+Final.duration = Part_Opening.duration;
+
 Comps = [Part_Classic, Part_Continuity, Part_Main20, Part_Newbie, Part_Suggest, Part_Main10, Part_Old, Part_Main3, Part_Extra];
 for (n = 0; n < Comps.length; n++) {
     TempLayer = AddLayer(Final, Comps[n].name, Comps[n].duration, Final.duration);
@@ -1990,5 +2089,6 @@ for (n = 0; n < Comps.length; n++) {
     Final.duration += Comps[n].duration;
 }
 
-Final.duration += 18; //ED
+AddLayer(Final, '!ED', app.project.items[ResourceID['!ED']].duration, Final.duration);
+Final.duration += app.project.items[ResourceID['!ED']].duration;
 Final.openInViewer();
