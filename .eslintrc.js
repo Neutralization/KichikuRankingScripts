@@ -32,5 +32,7 @@ module.exports = {
         'quotes': ['error', 'single'],
         'semi': ['error', 'always'],
         'space-infix-ops': 'error',
+        'space-in-parens': 'error',
+        'space-before-blocks': 'error'
     }
 };
