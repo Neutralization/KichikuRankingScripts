@@ -60,7 +60,7 @@ for (key in FootageFile) {
     }
 }
 
-op2 = ['蓝.mp4','粉.mp4','绿.mp4','橙.mp4'];
+op2 = ['蓝.mp4', '粉.mp4', '绿.mp4', '橙.mp4'];
 
 Template = app.project.items.addFolder('Template');
 TemplateFile = {
@@ -406,7 +406,7 @@ SingleLength = 25;
 LastRank = 0;
 
 for (key = 0; key < FootageData.length; key++) {
-    if (FootageData[key].type == '连续'){
+    if (FootageData[key].type == '连续') {
         if (FootageData[key].rank > LastRank) {
             LastRank = FootageData[key].rank;
         }
@@ -612,7 +612,7 @@ Globaloffset = 0;
 SingleLength = 25;
 LastRank = 0;
 for (key = 0; key < FootageData.length; key++) {
-    if (FootageData[key].type == '新人'){
+    if (FootageData[key].type == '新人') {
         if (FootageData[key].rank > LastRank) {
             LastRank = FootageData[key].rank;
         }
