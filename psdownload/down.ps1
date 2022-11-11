@@ -122,10 +122,10 @@ function BiliDown {
     # Write-Output $VideoDASH
 
     try {
-        $aria2cArgs = "-x16 -s12 -j20 -k1M --continue --check-certificate=false --file-allocation=none --summary-interval=0 --download-result=hide ""$($AudioDASH)"" --header=""$($UA)"" --header=""Referer: https://www.bilibili.com"" --dir=$($DownloadFolder) --out $($CID)_a.m4s"
+        $aria2cArgs = "-x16 -s12 -j20 -k1M --continue --check-certificate=false --file-allocation=none --summary-interval=0 --download-result=hide ""$($AudioDASH)"" --header=""$($UA)"" --header=""Referer: $($Headers.referer)"" --dir=$($DownloadFolder) --out $($CID)_a.m4s"
         Start-Process -NoNewWindow -Wait -FilePath "aria2c.exe" -ArgumentList $aria2cArgs -RedirectStandardError "$($DownloadFolder)/$($CID)_.log"
 
-        $aria2cArgs = "-x16 -s12 -j20 -k1M --continue --check-certificate=false --file-allocation=none --summary-interval=0 --download-result=hide ""$($VideoDASH)"" --header=""User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0"" --header=""Referer: https://www.bilibili.com"" --dir=$($DownloadFolder) --out $($CID)_v.m4s"
+        $aria2cArgs = "-x16 -s12 -j20 -k1M --continue --check-certificate=false --file-allocation=none --summary-interval=0 --download-result=hide ""$($VideoDASH)"" --header=""$($UA)"" --header=""Referer: $($Headers.referer)"" --dir=$($DownloadFolder) --out $($CID)_v.m4s"
         Start-Process -NoNewWindow -Wait -FilePath "aria2c.exe" -ArgumentList $aria2cArgs -RedirectStandardError "$($DownloadFolder)/$($CID)_.log"
 
         $ffmpegArgs = "-y -hide_banner -i $($DownloadFolder)/$($CID)_a.m4s -i $($DownloadFolder)/$($CID)_v.m4s -c copy $($DownloadFolder)/$($ID).mp4"
