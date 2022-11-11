@@ -22,7 +22,6 @@ OPTEXT.ffx
 zip.ps1
 
 # 数据
-psdownload/download.txt
 *.json
 *.xlsx
 *.csv
