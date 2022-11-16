@@ -114,7 +114,7 @@ def xlsx2json(filename, ranktype):
                 "rank": n + 1,
                 "type": "旧稿",
                 "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
-                "image": f"./旧稿推荐/{n + 1}.png",
+                "image": f"./旧榜/{n + 1}.png",
                 "offset": 0,
             }
             for n, x in enumerate(xlsx_data)
@@ -126,12 +126,12 @@ def xlsx2json(filename, ranktype):
                 "rank": n + 1,
                 "type": "榜外",
                 "video": f"./主榜视频/{x['AV号'].lower()}.mp4",
-                "image": f"./冷门推荐/{n + 1}.png",
+                "image": f"./榜外/{n + 1}.png",
                 "offset": 0,
             }
             for n, x in enumerate(xlsx_data)
         ]
-        json_data[-1]["image"] = "./经典推荐/1.png"
+        json_data[-1]["image"] = "./经典/1.png"
         json_data[-1]["rank"] = 0
         json_data[-1]["type"] = "经典"
 
