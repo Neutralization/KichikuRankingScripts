@@ -93,11 +93,11 @@ def excel2json(filename, ranktype):
 
 
 def main():
-    MainExcel = input("\n\t拖拽主榜Excel到窗口，出现地址后回车\n\t")
+    MainExcel = input("\n\t拖拽主榜 Excel 到窗口，出现地址后回车\n\t")
     print(f"\t{MainExcel}")
-    SubExcel = input("\n\t拖拽榜外推荐Excel到窗口，出现地址后回车\n\t")
+    SubExcel = input("\n\t拖拽榜外推荐 Excel 到窗口，出现地址后回车\n\t")
     print(f"\t{SubExcel}")
-    NewExcel = input("\n\t拖拽新人自荐Excel到窗口，出现地址后回车\n\t")
+    NewExcel = input("\n\t拖拽新人自荐 Excel 到窗口，出现地址后回车\n\t")
     print(f"\t{NewExcel}")
 
     json_data = [
@@ -120,7 +120,7 @@ def main():
         rename("月刊数据.json", f"月刊数据_备份_{now}.json")
     with open("月刊数据.json", "w", encoding="utf-8") as f:
         f.write(data)
-    print("\n\tAE脚本数据“月刊数据.json”已经生成")
+    print("\n\tAE 脚本数据“月刊数据.json”已经生成")
     input("\n\t可以正常退出...\n\t")
 
 

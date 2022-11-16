@@ -18,9 +18,9 @@ weeks = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
 def find(week, name):
     for files in listdir("."):
         if files.endswith(".xlsx") and week in files and name in files:
-            print(f"\t找到{week}期{name}Excel文件")
+            print(f"\t找到{week}期{name}Excel 文件")
             return files
-    print(f"\t未找到{week}期{name}Excel文件")
+    print(f"\t未找到{week}期{name}Excel 文件")
     return None
 
 
@@ -88,7 +88,7 @@ def xlsx2json(filename, ranktype):
                 "point": "+"
                 + format(int(point_data[x["排名"]]) - int(point_data[x["排名"] + 1]), ",")
                 if point_data.get(x["排名"] + 1) and n + 1 <= 3
-                else "+000,000,000记得改数字！！"
+                else "+000,000,000 记得改数字！！"
                 if not point_data.get(x["排名"] + 1) and n + 1 <= 3
                 else "",
                 "offset": 0,
@@ -154,10 +154,10 @@ def xlsx2json(filename, ranktype):
 
 def main():
     print(f"\n\t现在是 {NOW.format('YYYY-MM-DD HH:MM:SS')}，本周应该是周刊第{an2cn(weeks)}期")
-    print(f"\n\t将会查找文件名包含“主榜”“{weeks}”的Excel文件")
-    print(f"\t将会查找文件名包含“连续在榜”“{weeks}”的Excel文件")
-    print(f"\t将会查找文件名包含“旧稿回顾”“{an2cn(weeks)}”的Excel文件")
-    print(f"\t将会查找文件名包含“经典回顾”“{an2cn(weeks)}”的Excel文件")
+    print(f"\n\t将会查找文件名包含“主榜”“{weeks}”的 Excel 文件")
+    print(f"\t将会查找文件名包含“连续在榜”“{weeks}”的 Excel 文件")
+    print(f"\t将会查找文件名包含“旧稿回顾”“{an2cn(weeks)}”的 Excel 文件")
+    print(f"\t将会查找文件名包含“经典回顾”“{an2cn(weeks)}”的 Excel 文件")
 
     input("\n\t回车继续执行...")
 
@@ -200,7 +200,7 @@ def main():
         rename("周刊数据.json", f"周刊数据_备份_{now}.json")
     with open("周刊数据.json", "w", encoding="utf-8") as f:
         f.write(dumps(json_data, indent=4, ensure_ascii=False))
-    print("\n\tAE脚本数据“周刊数据.json”已经生成")
+    print("\n\tAE 脚本数据“周刊数据.json”已经生成")
     print(f"\n\t视频下载列表已保存至“{abspath('./psdownload/download.txt')}”")
     input("\n\t可以正常退出...\n\t")
 

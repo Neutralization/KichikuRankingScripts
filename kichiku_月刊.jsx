@@ -9,14 +9,14 @@ RankVideoSize = CompSize * 0.705;
 NewVideoSize = CompSize * 0.680;
 CompFPS = 25;
 
-Part1 = app.project.items.addComp('主榜20-11', 1920, 1080, 1, 5, CompFPS);
+Part1 = app.project.items.addComp('主榜 20-11', 1920, 1080, 1, 5, CompFPS);
 Part2 = app.project.items.addComp('榜外推荐', 1920, 1080, 1, 5, CompFPS);
-Part3 = app.project.items.addComp('主榜10-4', 1920, 1080, 1, 5, CompFPS);
+Part3 = app.project.items.addComp('主榜 10-4', 1920, 1080, 1, 5, CompFPS);
 Part4 = app.project.items.addComp('新人自荐', 1920, 1080, 1, 5, CompFPS);
 Next3 = app.project.items.addComp('Next3', 1920, 1080, 1, 5, CompFPS);
 Next2 = app.project.items.addComp('Next2', 1920, 1080, 1, 5, CompFPS);
 Next1 = app.project.items.addComp('Next1', 1920, 1080, 1, 5, CompFPS);
-Part5 = app.project.items.addComp('主榜3-1', 1920, 1080, 1, 5, CompFPS);
+Part5 = app.project.items.addComp('主榜 3-1', 1920, 1080, 1, 5, CompFPS);
 Part6 = app.project.items.addComp('副榜', 1920, 1080, 1, 5 * 36, CompFPS);
 Final = app.project.items.addComp('总合成', 1920, 1080, 1, 27, CompFPS);
 
@@ -31,7 +31,7 @@ OffsetData = {};
 PointData = {};
 
 for (key = 0; key < FootageData.length; key++) {
-    RankList = FootageData[key].type;
+    RankList = FootageData[key].type + ' ';
     Rank = FootageData[key].rank;
     FileName = 'Rank_' + Rank;
     FootageFile[RankList + FileName + '_Video'] = FootageData[key].video;
@@ -322,15 +322,15 @@ SingleLength = 25;
 BlackLayer = Part1.layers.addSolid(hexToRgb('000000'), '黑底', CompSize[0], CompSize[1], 1);
 AddLayer(Part1, 'next_20', 5, 0);
 for (rank = 20; rank >= 11; rank -= 1) {
-    VideoFile = '主榜Rank_' + rank + '_Video';
-    ImageFile = '主榜Rank_' + rank + '_Image';
+    VideoFile = '主榜 Rank_' + rank + '_Video';
+    ImageFile = '主榜 Rank_' + rank + '_Image';
     TrueDuration = app.project.items[ResourceID[VideoFile]].duration;
     if (TrueDuration < SingleLength) {
-        VideoDuration = TrueDuration - OffsetData['主榜' + rank];
+        VideoDuration = TrueDuration - OffsetData['主榜 ' + rank];
     } else {
         VideoDuration = SingleLength;
     }
-    RankVideoLayer = AddLayer(Part1, VideoFile, VideoDuration, Globaloffset - OffsetData['主榜' + rank]);
+    RankVideoLayer = AddLayer(Part1, VideoFile, VideoDuration, Globaloffset - OffsetData['主榜 ' + rank]);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset, 1);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + VideoDuration - 1, 2);
     RankVideoLayer.inPoint = Globaloffset;
@@ -385,15 +385,15 @@ SingleLength = 25;
 BlackLayer = Part2.layers.addSolid(hexToRgb('000000'), '黑底', CompSize[0], CompSize[1], 1);
 AddLayer(Part2, 'next_out', 5, 0);
 for (rank = 10; rank >= 1; rank -= 1) {
-    VideoFile = '榜外Rank_' + rank + '_Video';
-    ImageFile = '榜外Rank_' + rank + '_Image';
+    VideoFile = '榜外 Rank_' + rank + '_Video';
+    ImageFile = '榜外 Rank_' + rank + '_Image';
     TrueDuration = app.project.items[ResourceID[VideoFile]].duration;
     if (TrueDuration < SingleLength) {
-        VideoDuration = TrueDuration - OffsetData['榜外' + rank];
+        VideoDuration = TrueDuration - OffsetData['榜外 ' + rank];
     } else {
         VideoDuration = SingleLength;
     }
-    RankVideoLayer = AddLayer(Part2, VideoFile, VideoDuration, Globaloffset - OffsetData['榜外' + rank]);
+    RankVideoLayer = AddLayer(Part2, VideoFile, VideoDuration, Globaloffset - OffsetData['榜外 ' + rank]);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset, 1);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + VideoDuration - 1, 2);
     RankVideoLayer.inPoint = Globaloffset;
@@ -448,15 +448,15 @@ SingleLength = 25;
 BlackLayer = Part3.layers.addSolid(hexToRgb('000000'), '黑底', CompSize[0], CompSize[1], 1);
 AddLayer(Part3, 'next_10', 5, 0);
 for (rank = 10; rank >= 4; rank -= 1) {
-    VideoFile = '主榜Rank_' + rank + '_Video';
-    ImageFile = '主榜Rank_' + rank + '_Image';
+    VideoFile = '主榜 Rank_' + rank + '_Video';
+    ImageFile = '主榜 Rank_' + rank + '_Image';
     TrueDuration = app.project.items[ResourceID[VideoFile]].duration;
     if (TrueDuration < SingleLength) {
-        VideoDuration = TrueDuration - OffsetData['主榜' + rank];
+        VideoDuration = TrueDuration - OffsetData['主榜 ' + rank];
     } else {
         VideoDuration = SingleLength;
     }
-    RankVideoLayer = AddLayer(Part3, VideoFile, VideoDuration, Globaloffset - OffsetData['主榜' + rank]);
+    RankVideoLayer = AddLayer(Part3, VideoFile, VideoDuration, Globaloffset - OffsetData['主榜 ' + rank]);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset, 1);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + VideoDuration - 1, 2);
     RankVideoLayer.inPoint = Globaloffset;
@@ -520,18 +520,18 @@ SingleLength = 25;
 BlackLayer = Part4.layers.addSolid(hexToRgb('000000'), '黑底', CompSize[0], CompSize[1], 1);
 AddLayer(Part4, 'next_new', 5, 0);
 for (rank = 10; rank >= 1; rank -= 1) {
-    VideoFile = '新人Rank_' + rank + '_Video';
-    ImageFile = '新人Rank_' + rank + '_Image';
+    VideoFile = '新人 Rank_' + rank + '_Video';
+    ImageFile = '新人 Rank_' + rank + '_Image';
     if (!(VideoFile in ResourceID)) {
         continue;
     }
     TrueDuration = app.project.items[ResourceID[VideoFile]].duration;
     if (TrueDuration < SingleLength) {
-        VideoDuration = TrueDuration - OffsetData['新人' + rank];
+        VideoDuration = TrueDuration - OffsetData['新人 ' + rank];
     } else {
         VideoDuration = SingleLength;
     }
-    RankVideoLayer = AddLayer(Part4, VideoFile, VideoDuration, Globaloffset - OffsetData['新人' + rank]);
+    RankVideoLayer = AddLayer(Part4, VideoFile, VideoDuration, Globaloffset - OffsetData['新人 ' + rank]);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset, 1);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + VideoDuration - 1, 2);
     RankVideoLayer.inPoint = Globaloffset;
@@ -586,7 +586,7 @@ for (rank = 3; rank >= 1; rank -= 1) {
     Globaloffset = 0;
     Comp = NextList[rank - 1];
     AddLayer(Comp, 'next_3', 5, Globaloffset);
-    PointTextLayer = Comp.layers.addText('比上一名高' + PointData['主榜' + rank] + '分');
+    PointTextLayer = Comp.layers.addText('比上一名高' + PointData['主榜 ' + rank] + '分');
     PointTextLayer.startTime = Globaloffset;
     PointTextLayer.outPoint = Globaloffset + 5;
     PointTextLayer.trackMatteType = TrackMatteType.ALPHA;
@@ -608,7 +608,7 @@ for (rank = 3; rank >= 1; rank -= 1) {
     PointMaskLayer.property('Position').setValue([962, 558]);
     PointMaskLayer.enabled = false;
 
-    RankTextLayer = Comp.layers.addText('主榜' + rank);
+    RankTextLayer = Comp.layers.addText('主榜 ' + rank);
     RankTextLayer.startTime = Globaloffset;
     RankTextLayer.outPoint = Globaloffset + 5;
     RankTextLayer.trackMatteType = TrackMatteType.ALPHA;
@@ -690,15 +690,15 @@ BlackLayer = Part5.layers.addSolid(hexToRgb('000000'), '黑底', CompSize[0], Co
 for (rank = 3; rank >= 1; rank -= 1) {
     AddLayer(Part5, 'Next' + rank, 5, Globaloffset);
     Globaloffset += 5;
-    VideoFile = '主榜Rank_' + rank + '_Video';
-    ImageFile = '主榜Rank_' + rank + '_Image';
+    VideoFile = '主榜 Rank_' + rank + '_Video';
+    ImageFile = '主榜 Rank_' + rank + '_Image';
     TrueDuration = app.project.items[ResourceID[VideoFile]].duration;
     if (TrueDuration < SingleLength) {
-        VideoDuration = TrueDuration - OffsetData['主榜' + rank];
+        VideoDuration = TrueDuration - OffsetData['主榜 ' + rank];
     } else {
         VideoDuration = SingleLength;
     }
-    RankVideoLayer = AddLayer(Part5, VideoFile, VideoDuration, Globaloffset - OffsetData['主榜' + rank]);
+    RankVideoLayer = AddLayer(Part5, VideoFile, VideoDuration, Globaloffset - OffsetData['主榜 ' + rank]);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset, 1);
     AddAudioProperty(RankVideoLayer, 2, 1, Globaloffset + VideoDuration - 1, 2);
     RankVideoLayer.inPoint = Globaloffset;
@@ -753,7 +753,7 @@ Part5.duration = BlackLayer.outPoint = Globaloffset;
 Globaloffset = 5;
 AddLayer(Part6, 'next_sub', 5, 0);
 app.project.items[ResourceID.mask_sub].mainSource.loop = 35;
-Bgm = AddLayer(Part6, '副榜Rank_0_Video', 5 * 35, Globaloffset - OffsetData['副榜0']);
+Bgm = AddLayer(Part6, '副榜 Rank_0_Video', 5 * 35, Globaloffset - OffsetData['副榜 0']);
 Bgm.inPoint = Globaloffset;
 Bgm.outPoint = Globaloffset + 5 * 35;
 // Bgm.property('Opacity').setValue(0);

@@ -14,9 +14,9 @@ weeks = int((NOW.timestamp() - PAST.timestamp()) / 3600 / 24 / 7) + 1
 def find(week, name):
     for files in os.listdir("."):
         if files.endswith(".xlsx") and week in files and name in files:
-            print(f"\t找到{week}期{name}Excel文件")
+            print(f"\t找到{week}期{name}Excel 文件")
             return files
-    print(f"\t未找到{week}期{name}Excel文件")
+    print(f"\t未找到{week}期{name}Excel 文件")
     return None
 
 

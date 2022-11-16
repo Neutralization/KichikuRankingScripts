@@ -62,7 +62,7 @@ async def getcover(aid):
     if result.get("code") == 0:
         return {aid: result["data"].get("pic")}
     else:
-        print(f"av{aid} 封面获取失败: {result.get('message')}")
+        print(f"av{aid} 封面获取失败：{result.get('message')}")
         return {aid: None}
 
 
@@ -87,7 +87,7 @@ def readExcel(filename):
         df = df.drop(excluded)
         df = df.sort_index().reset_index(drop=True)
     columns = df.columns.to_list()
-    df.insert(columns.index("mid") + 1, "up主", [""] * len(df.index))
+    df.insert(columns.index("mid") + 1, "UP 主", [""] * len(df.index))
     df.insert(0, "排名", [i + 1 for i in range(len(df.index))])
     df.insert(0, "评语", [""] * len(df.index))
 
@@ -142,7 +142,7 @@ def diffExcel(ranktype, num, file1, file2):
                 pass
         new.at[i, "评语"] = f"上{ranktype}{lastrank}"
 
-    print("\n获取UP主昵称...")
+    print("\n获取 UP 主昵称...")
     mids = set([int(new.at[x, "mid"]) for x in new[0:150].index])
     nameloop = asyncio.new_event_loop()
     nametasks = [asyncio.ensure_future(getusername(x), loop=nameloop) for x in mids]
@@ -191,14 +191,14 @@ def diffExcel(ranktype, num, file1, file2):
     print(
         new.loc[
             :21,
-            ["排名", "aid", "bvid", "up主", "title"],
+            ["排名", "aid", "bvid", "UP 主", "title"],
         ]
     )
 
 
 def main():
     global excluded
-    ranktype = "月" if "m" in input("\n\t周刊(w) or 月刊(m)？\n") else "周"
+    ranktype = "月" if "m" in input("\n\t周刊 (w) or 月刊 (m) ？\n") else "周"
     print(f"\n加载文件\n\t{abspath(f'{ranktype}刊除外.csv')}")
     excluded = [int(line.strip("\n")) for line in open(f"{ranktype}刊除外.csv", "r")]
     if ranktype == "周":
