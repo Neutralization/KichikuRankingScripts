@@ -701,7 +701,7 @@ Globaloffset = 5;
 SingleLength = 25;
 BlackLayer = Part_Suggest.layers.addSolid(hexToRgb('000000'), '黑底', CompSize[0], CompSize[1], 1);
 AddLayer(Part_Suggest, 'next_suggest', 5, 0);
-for (rank = 10; rank >= 1; rank -= 1) {
+for (rank = 1; rank <= 10; rank += 1) {
     VideoFile = '榜外Rank_' + rank + '_Video';
     ImageFile = '榜外Rank_' + rank + '_Image';
     TrueDuration = app.project.items[ResourceID[VideoFile]].duration;
