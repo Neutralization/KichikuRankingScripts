@@ -1,4 +1,4 @@
-aiohttp==3.8.3
+aiohttp==3.8.4
 arrow==1.2.3
 openpyxl==3.0.10
 pandas==1.5.1
