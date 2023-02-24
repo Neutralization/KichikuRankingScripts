@@ -18,7 +18,7 @@ WEEKDAY = int(NOW.format("d"))
 WBEFORE = NOW.shift(days=-(WEEKDAY + 13)).format("YYYY-MM-DD")
 WLAST = NOW.shift(days=-(WEEKDAY + 6)).format("YYYY-MM-DD")
 WTHIS = NOW.shift(days=-(WEEKDAY - 1)).format("YYYY-MM-DD")
-MONTH = abs(int(NOW.format("M")) - 5) + abs(int(NOW.format("YYYY")) - 2022)
+MONTH = int(NOW.format("M")) - 5 + (int(NOW.format("YYYY")) - 2022) * 12
 MBEFORE = NOW.shift(months=-2).format("YYYY-MM-01")
 MLAST = NOW.shift(months=-1).format("YYYY-MM-01")
 MTHIS = NOW.format("YYYY-MM-01")
@@ -87,7 +87,7 @@ def readExcel(filename):
         df = df.drop(excluded)
         df = df.sort_index().reset_index(drop=True)
     columns = df.columns.to_list()
-    df.insert(columns.index("mid") + 1, "UP 主", [""] * len(df.index))
+    df.insert(columns.index("mid") + 1, "up主", [""] * len(df.index))
     df.insert(0, "排名", [i + 1 for i in range(len(df.index))])
     df.insert(0, "评语", [""] * len(df.index))
 
@@ -191,7 +191,7 @@ def diffExcel(ranktype, num, file1, file2):
     print(
         new.loc[
             :21,
-            ["排名", "aid", "bvid", "UP 主", "title"],
+            ["排名", "aid", "bvid", "up主", "title"],
         ]
     )
 
