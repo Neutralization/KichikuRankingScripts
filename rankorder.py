@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import asyncio
 import json
+import time
 from functools import reduce
 from os import listdir, remove
 from os.path import abspath
 
-import aiohttp
 import arrow
 import requests
 from pandas import Series, read_csv, read_excel, to_datetime
@@ -24,7 +23,7 @@ MLAST = NOW.shift(months=-1).format("YYYY-MM-01")
 MTHIS = NOW.format("YYYY-MM-01")
 
 
-async def getusername(uid):
+def getusername(uid):
     headers = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
     }
@@ -32,33 +31,30 @@ async def getusername(uid):
         "mid": uid,
         "jsonp": "jsonp",
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            "https://api.bilibili.com/x/space/acc/info", params=params, headers=headers
-        ) as resp:
-            content = await resp.text()
-            result = json.loads(content)
+    result = requests.get(
+        "https://api.bilibili.com/x/space/wbi/acc/info", params=params, headers=headers
+    ).json()
+    # result = json.loads(resp.content)
     if result.get("code") == 0:
+        print({uid: result["data"].get("name")})
         return {uid: result["data"].get("name")}
     else:
         return {uid: uid}
 
 
-async def getcover(aid):
+def getcover(aid):
     headers = {
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0",
     }
     params = {
         "aid": aid,
     }
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            "https://api.bilibili.com/x/web-interface/view",
-            params=params,
-            headers=headers,
-        ) as resp:
-            content = await resp.text()
-            result = json.loads(content)
+    result = requests.get(
+        "https://api.bilibili.com/x/web-interface/view",
+        params=params,
+        headers=headers,
+    ).json()
+    # result = json.loads(resp.content)
     if result.get("code") == 0:
         return {aid: result["data"].get("pic")}
     else:
@@ -143,13 +139,14 @@ def diffExcel(ranktype, num, file1, file2):
         new.at[i, "评语"] = f"上{ranktype}{lastrank}"
 
     print("\n获取 UP 主昵称...")
-    mids = set([int(new.at[x, "mid"]) for x in new[0:150].index])
-    nameloop = asyncio.new_event_loop()
-    nametasks = [asyncio.ensure_future(getusername(x), loop=nameloop) for x in mids]
-    usernames = nameloop.run_until_complete(asyncio.gather(*nametasks))
-    usernames = reduce(lambda x, y: {**x, **y}, usernames)
+    mids = set([str(new.at[x, "mid"]) for x in new[0:150].index])
+    usernames = json.load(open("usernames.json", "r", encoding="utf-8-sig"))
+    for x in mids.difference(set(usernames.keys())):
+        usernames = {**getusername(x), **usernames}
+        time.sleep(3)
+    json.dump(usernames, open("usernames.json", "w", encoding="utf-8-sig"))
     for x in new[0:150].index:
-        new.at[x, "up主"] = usernames[new.at[x, "mid"]]
+        new.at[x, "up主"] = usernames[str(new.at[x, "mid"])]
 
     onrank = new.loc[new["排名"] <= 20 + len(long_array)]["aid"].to_list()
     long[num] = Series(onrank)
@@ -166,13 +163,10 @@ def diffExcel(ranktype, num, file1, file2):
     print("\n获取视频封面...")
     for file in listdir("./pic/"):
         remove(f"./pic/{file}")
-    coverloop = asyncio.new_event_loop()
-    covertasks = [
-        asyncio.ensure_future(getcover(int(new.at[x, "aid"])), loop=coverloop)
-        for x in new[0:125].index
-    ]
-    covers = coverloop.run_until_complete(asyncio.gather(*covertasks))
-    covers = reduce(lambda x, y: {**x, **y}, covers)
+    covers = reduce(
+        lambda x, y: {**x, **y},
+        map(getcover, [int(new.at[x, "aid"]) for x in new[0:125].index]),
+    )
     list(
         map(
             downcover,
