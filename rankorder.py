@@ -3,8 +3,8 @@
 import json
 import time
 from functools import reduce
-from os import listdir, remove
-from os.path import abspath
+from os import listdir, mkdir, remove
+from os.path import abspath, exists
 
 import arrow
 import requests
@@ -89,7 +89,7 @@ def readExcel(filename):
 
     for i in range(1000):
         df.loc[i, "转化率"] = f"{int(df.at[i, '转化率']*100)}%"
-        df.loc[i, "总分"] = int(df.at[i, "总分"])
+        df.loc[i, "总分"] = f"{int(df.at[i, '总分'])}"
         df.at[i, "pubdate"] = to_datetime(
             df.loc[i, "pubdate"], format="%Y-%m-%d %H:%M:%S"
         ).strftime("%Y/%m/%d %H:%M")
@@ -153,10 +153,17 @@ def diffExcel(ranktype, num, file1, file2):
     long.to_excel(f"{ranktype}刊长期.xlsx", index=False)
 
     if len(long_array) > 0:
+        if not exists(f"./{num:03d}期连续在榜/"):
+            mkdir(f"./{num:03d}期连续在榜/")
         long = new.iloc[long_array, :]
         onarray = long.loc[long["排名"] > 20 + len(long_array)].index
         long = long.drop(onarray)
         long.to_excel(f"{ranktype}刊{num:03d}期连续在榜.xlsx", index=False)
+        long.to_csv(
+            f"{ranktype}刊{num:03d}期连续在榜.csv",
+            encoding="utf-8-sig",
+            index=False,
+        )
         new.drop(long_array, inplace=True)
     new = new.sort_index().reset_index(drop=True)
 
@@ -181,6 +188,29 @@ def diffExcel(ranktype, num, file1, file2):
     new.loc[19.5] = new.columns.to_list()
     new = new.sort_index().reset_index(drop=True)
     new[0:128].to_excel(f"{ranktype}刊{num:03d}期主榜.xlsx", index=False)
+    new[0:3].to_csv(
+        f"{ranktype}刊{num:03d}期主榜1-3.csv", encoding="utf-8-sig", index=False
+    )
+    new[4:11].to_csv(
+        f"{ranktype}刊{num:03d}期主榜4-10.csv", encoding="utf-8-sig", index=False
+    )
+    new[12:22].to_csv(
+        f"{ranktype}刊{num:03d}期主榜11-20.csv", encoding="utf-8-sig", index=False
+    )
+    new[23:128].to_csv(
+        f"{ranktype}刊{num:03d}期主榜21-125.csv", encoding="utf-8-sig", index=False
+    )
+    with open("ToRankImg.bat", "w", encoding="gb2312") as f:
+        f.write(
+            f"""
+start /wait TEditor.exe batchgen -i "./模板/周刊3-1.ted" -d "./周刊{num:03d}期主榜1-3.csv" -o "./主榜3-1/" -n "Rank_{{index}}" -s 1 -e 3
+start /wait TEditor.exe batchgen -i "./模板/周刊10-4.ted" -d "./周刊{num:03d}期主榜4-10.csv" -o "./主榜10-4/" -n "Rank_{{index}}" -s 1 -e 7
+start /wait TEditor.exe batchgen -i "./模板/周刊20-11.ted" -d "./周刊{num:03d}期主榜11-20.csv" -o "./主榜20-11/" -n "Rank_{{index}}" -s 1 -e 10
+start /wait TEditor.exe batchgen -i "./模板/周刊副榜.ted" -d "./周刊{num:03d}期主榜21-125.csv" -o "./副榜21-125/" -n "Rank_{{index}}" -s 1 -e 105 -r 2 -y 350
+{'::' if len(long_array) == 0 else ''}start /wait TEditor.exe batchgen -i "./模板/周刊连续在榜.ted" -d "./周刊{num:03d}期连续在榜.csv" -o "./{num:03d}期连续在榜/" -n "Rank_{{index}}" -s 1 -e {len(long_array)}
+{f'7z a -t7z -m0=lzma2 -mx9 {num:03d}期主榜副榜.7z ./副榜21-125/ ./主榜3-1/ ./主榜10-4/ ./主榜20-11/ ./周刊{num:03d}期主榜.xlsx' if len(long_array) == 0 else f'7z a -t7z -m0=lzma2 -mx9 {num:03d}期主榜副榜.7z ./{num:03d}期连续在榜/ ./副榜21-125/ ./主榜3-1/ ./主榜10-4/ ./主榜20-11/ ./周刊{num:03d}期连续在榜.xlsx ./周刊{num:03d}期主榜.xlsx'}
+"""
+        )
 
     print(
         new.loc[
