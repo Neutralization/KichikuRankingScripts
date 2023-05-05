@@ -53,7 +53,7 @@ def readexcel(filename, index):
         return continuity
     if index == 2:
         old = df[["AV号"]].values.tolist()
-        old = [[len(old) - n, x[0]] for n, x in enumerate(old)]
+        old = [[len(old) - n, x[0].lower()] for n, x in enumerate(old)]
         old = [["旧稿回顾", ""]] + old
         return old
     if index == 3:
@@ -87,11 +87,11 @@ def main():
     ranklist = (
         [[f"{weeks:03d}期节目单", ""]]
         + readexcel(excellist[4], 4)  # 经典推荐
-        + readexcel(excellist[1], 1)  # 连续在榜
+        + (readexcel(excellist[1], 1) if excellist[1] is not None else [])  # 连续在榜
         + (readexcel(excellist[5], 5) if excellist[5] is not None else [])  # 新人自荐
         + readexcel(excellist[3], 3)  # 榜外推荐
         + readexcel(excellist[2], 2)  # 旧稿回顾
-        + [["ED", ""], ["", "av"]]
+        # + [["ED", ""], ["", "av"]]
         + readexcel(excellist[0], 0)  # 主榜
     )
     df = pd.DataFrame(ranklist)
