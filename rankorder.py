@@ -144,7 +144,12 @@ def diffExcel(ranktype, num, file1, file2):
     for x in mids.difference(set(usernames.keys())):
         usernames = {**getusername(x), **usernames}
         time.sleep(3)
-    json.dump(usernames, open("usernames.json", "w", encoding="utf-8-sig"))
+    json.dump(
+        usernames,
+        open("usernames.json", "w", encoding="utf-8-sig"),
+        ensure_ascii=False,
+        indent=4,
+    )
     for x in new[0:150].index:
         new.at[x, "up主"] = usernames[str(new.at[x, "mid"])]
 
