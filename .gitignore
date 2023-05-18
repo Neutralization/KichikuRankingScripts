@@ -1,3 +1,6 @@
+__pycache__/
+node_modules/
+venv/
 # 素材
 pic/
 模板/
