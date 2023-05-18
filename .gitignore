@@ -24,6 +24,7 @@ pic/
 ED.aep
 OPTEXT.ffx
 zip.ps1
+*.ttf
 
 # 数据
 psdownload/download.txt
@@ -39,3 +40,4 @@ psdownload/download.txt
 # 编译
 *.exe
 *.spec
+*.bat
