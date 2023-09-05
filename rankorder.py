@@ -215,7 +215,9 @@ start /wait TEditor.exe batchgen -i "./模板/周刊3-1.ted" -d "./周刊{num:03
 start /wait TEditor.exe batchgen -i "./模板/周刊10-4.ted" -d "./周刊{num:03d}期主榜4-10.csv" -o "./主榜10-4/" -n "Rank_{{index}}" -s 1 -e 7
 start /wait TEditor.exe batchgen -i "./模板/周刊20-11.ted" -d "./周刊{num:03d}期主榜11-20.csv" -o "./主榜20-11/" -n "Rank_{{index}}" -s 1 -e 10
 start /wait TEditor.exe batchgen -i "./模板/周刊副榜.ted" -d "./周刊{num:03d}期主榜21-125.csv" -o "./副榜21-125/" -n "Rank_{{index}}" -s 1 -e 105 -r 2 -y 350
+del /f /s /q "./周刊{num:03d}期主榜1-3.csv" "./周刊{num:03d}期主榜4-10.csv" "./周刊{num:03d}期主榜11-20.csv" "./周刊{num:03d}期主榜21-125.csv"
 {'::' if len(long_array) == 0 else ''}start /wait TEditor.exe batchgen -i "./模板/周刊连续在榜.ted" -d "./周刊{num:03d}期连续在榜.csv" -o "./{num:03d}期连续在榜/" -n "Rank_{{index}}" -s 1 -e {len(long_array)}
+{'::' if len(long_array) == 0 else ''}del /f /s /q "./周刊{num:03d}期连续在榜.csv"
 {f'7z a -t7z -m0=lzma2 -mx9 {num:03d}期主榜副榜.7z ./副榜21-125/ ./主榜3-1/ ./主榜10-4/ ./主榜20-11/ ./周刊{num:03d}期主榜.xlsx' if len(long_array) == 0 else f'7z a -t7z -m0=lzma2 -mx9 {num:03d}期主榜副榜.7z ./{num:03d}期连续在榜/ ./副榜21-125/ ./主榜3-1/ ./主榜10-4/ ./主榜20-11/ ./周刊{num:03d}期连续在榜.xlsx ./周刊{num:03d}期主榜.xlsx'}
 """
         )
