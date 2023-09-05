@@ -78,10 +78,13 @@ def readExcel(filename):
     df = read_csv(filename)
     df.sort_values(by="总分", inplace=True, ascending=False)
     df = df.reset_index(drop=True)
-    for aid in excluded:
-        excluded = df.loc[df["aid"] == aid].index
-        df = df.drop(excluded)
-        df = df.sort_index().reset_index(drop=True)
+    df = df.drop(
+        reduce(
+            list.__add__, [df.loc[df["aid"] == aid].index.to_list() for aid in excluded]
+        ),
+        axis=0,
+    )
+    df = df.sort_index().reset_index(drop=True)
     columns = df.columns.to_list()
     df.insert(columns.index("mid") + 1, "up主", [""] * len(df.index))
     df.insert(0, "排名", [i + 1 for i in range(len(df.index))])
